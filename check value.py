@@ -5,6 +5,7 @@ def get_answer(scrambled_word):
     return user_answer
 
 def check_answer(scrambled_word,original_word,difficulty_no):
+    #Change the time needed to answer
     time_multiplier = 1/(2*difficulty_no)
     start_time = time.time()
     useranswer = get_answer(scrambled_word)
