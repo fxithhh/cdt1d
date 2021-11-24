@@ -1,13 +1,13 @@
 import time
 
-def get_answer():
-    user_answer = input("[//] to pass. \nUnscrambled word: ")
+def get_answer(scrambled_word):
+    user_answer = input("[{}]\n[//] to pass. \nUnscrambled word: ".format(scrambled_word))
     return user_answer
 
-def check_answer(original_word,difficulty_no):
+def check_answer(scrambled_word,original_word,difficulty_no):
     time_multiplier = 1/(2*difficulty_no)
     start_time = time.time()
-    useranswer = get_answer()
+    useranswer = get_answer(scrambled_word)
     end_time = time.time()
     time_diff_sec = end_time - start_time
     if time_diff_sec >=10 or useranswer == "//":
@@ -36,4 +36,4 @@ def check_answer(original_word,difficulty_no):
     return point,(useranswer,original_word)
 
 
-check_answer("Hippo",2)
+check_answer("Popih","Hippo",2)
