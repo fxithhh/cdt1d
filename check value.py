@@ -1,7 +1,7 @@
 import time
 
 def get_answer():
-    user_answer = input("Unscrambled word: ")
+    user_answer = input("[//] to pass. \nUnscrambled word: ")
     return user_answer
 
 def check_answer(original_word,difficulty_no):
@@ -10,9 +10,9 @@ def check_answer(original_word,difficulty_no):
     useranswer = get_answer()
     end_time = time.time()
     time_diff_sec = end_time - start_time
-    if time_diff_sec >=10:
+    if time_diff_sec >=10 or useranswer == "//":
         point = 0
-        timesuptxt = "Time's up. You've earned 0 points. Be faster next word."
+        timesuptxt = "Give up/Times up. \n 0 Points.\n Next ones coming"
         print(timesuptxt)
         return point,(useranswer,original_word)
     if useranswer == original_word:
@@ -35,4 +35,5 @@ def check_answer(original_word,difficulty_no):
         time.sleep(3)
     return point,(useranswer,original_word)
 
-check_answer("Testword",2)
+
+check_answer("Hippo",2)
