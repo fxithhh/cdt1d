@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import ttk
 
 def main() -> None:
     """Main function. Runs TKinter window and everything else.
@@ -8,13 +9,13 @@ def main() -> None:
     initialize_window(window, "Dont touch me", icon='./icon.ico')
     
     # Place a label on the root window
-    message = tk.Label(window, text="Peepeepoopoo!")
-    message.pack()
+    for _ in range(100):
+        ttk.Label(window, text="Peepeepoopoo!").pack()
     
     # Keep the window open until it is closed
     window.mainloop()
 
-def initialize_window(window: tk.Tk, title: str, window_width: int = 300, window_height: int = 200, icon: str = None):
+def initialize_window(window: tk.Tk, title: str, window_width: int = 300, window_height: int = 200, icon: str = None) -> None:
     """Initializes the program window.
 
     Args:
