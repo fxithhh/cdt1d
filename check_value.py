@@ -3,10 +3,12 @@ import random
 from wordlist import *
 #Request user input
 def get_answer(scrambled_word):
-    user_answer = input("[{}]\n[//] to pass. \nUnscrambled word: ".format(scrambled_word))
+    user_answer = input(
+        "[{}]\n[//] to pass. \nUnscrambled word: ".format(scrambled_word))
     return user_answer
 
-def check_answer(scrambled_word,original_word):
+
+def check_answer(scrambled_word, original_word):
     start_time = time.time()
     useranswer = get_answer(scrambled_word)
     end_time = time.time()
@@ -24,15 +26,15 @@ def check_answer(scrambled_word,original_word):
         return point,("Skipped",original_word)
     #correct answer
     if useranswer.lower() == original_word.lower():
-        if 0<=time_diff_sec<4:
+        if 0 <= time_diff_sec < 4:
             point = 5
-        elif 4<=time_diff_sec<8:
+        elif 4 <= time_diff_sec < 8:
             point = 4
-        elif 8<=time_diff_sec<12:
+        elif 8 <= time_diff_sec < 12:
             point = 3
-        elif 12<=time_diff_sec<16:
+        elif 12 <= time_diff_sec < 16:
             point = 2
-        elif 16<=time_diff_sec<32:
+        elif 16 <= time_diff_sec < 32:
             point = 1
         else:
             point = 0
@@ -46,11 +48,11 @@ def check_answer(scrambled_word,original_word):
 
 #Call the list from wordlist.py    
 def set_current_list(difficulty):
-    if difficulty ==1:
+    if difficulty == 1:
         return easyword
-    elif difficulty ==2:
+    elif difficulty == 2:
         return medword
-    elif difficulty ==3:
+    elif difficulty == 3:
         return hardword
     else:
         print("Something went wrong")
@@ -60,10 +62,11 @@ def randomize(word):
     letters = []
     for char in word:
         letters.append(char)
-        
+
     random.shuffle(letters)
 
     return ''.join(letters)
+
 
 def main():
     #Mouse Speed
