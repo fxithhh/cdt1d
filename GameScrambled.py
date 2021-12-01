@@ -1,8 +1,9 @@
 import time
 import random
 from wordlist import *
+
 #Request user input
-class Gamescrambled():
+class GameScrambled():
     def __init__(self,difficulty):
         self.difficulty = difficulty
 
