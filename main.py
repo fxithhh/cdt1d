@@ -5,9 +5,6 @@ from tkinter import font as tkFont
 import gameclasses as GC
 import check_value as cv
 
-# Import word list
-import wordlist
-
 
 class MainApp(GC.GameRoot):
     """Main app class.
@@ -24,8 +21,6 @@ class MainApp(GC.GameRoot):
     def __init__(self, width, height, frame_delay, frames_list, *args, **kwargs):
         super().__init__(width, height, frame_delay, frames_list, *args, **kwargs)
         
-        self.content_font = tkFont.Font(
-            family='Comic Sans Ms', size=18, weight="bold", slant="italic")
         
         self.load_frames()
         
@@ -42,7 +37,7 @@ class MainMenuFrame(GC.GameFrame):
         super().__init__(parent, root)
         
         
-        self.background_image = tk.PhotoImage(file="giphy.gif")
+        self.background_image = tk.PhotoImage(file="./assets/Intro_frame.png")
         self.canvas.create_image(400, 300, anchor=tk.CENTER, image=self.background_image)
 
         # self.canvas.pack()
@@ -56,7 +51,7 @@ class MainMenuFrame(GC.GameFrame):
                               ('active', 'white')])
         
         # create button
-        startBtn = ttk.Button(self, text="Start", style="C.TButton",
+        startBtn = ttk.Button(root.container, text="Start", style="C.TButton",
                               command=lambda: root.show_frame(DifficultyFrame))
         startBtn.grid(row=1, column=0)
 
