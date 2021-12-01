@@ -87,6 +87,7 @@ class AnimatedSprite(Sprite):
         self.root.update_event.append(self.update)
     
     def update(self):
+        if not self.enabled: return
         
         # Rollover animation index if reached the end
         self.current_seq_index += 1
