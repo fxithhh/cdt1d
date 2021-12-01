@@ -123,8 +123,11 @@ class GameFrame(gc.GameFrame):
         self.label.grid(row=0, column=1, sticky='s')
         
         # Debug button (goes to end screen)
-        button = tk.Button(self, text="End Game", command=lambda: root.show_frame(EndWinFrame))
-        button.grid(row=2, column=2, sticky='se')
+        button = tk.Button(self, text="Win Game", command=lambda: root.show_frame(EndWinFrame))
+        button.grid(row=1, column=1)
+
+        button = tk.Button(self, text="Lose Game", command=lambda: root.show_frame(EndLoseFrame))
+        button.grid(row=2, column=1)
     
     def on_enable(self) -> None:
         print(cv.set_current_list(self.root.difficulty))
@@ -143,7 +146,7 @@ class EndWinFrame(gc.GameFrame):
                          font=root.title_font,
                          image=self.background_image2,
                          compound = "center")
-        label.grid(row=0, column=0, sticky="nsew")
+        label.grid(row=0, column=0)
         
         # styling buttons
         style = ttk.Style()
