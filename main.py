@@ -22,7 +22,6 @@ class MainApp(gc.GameRoot):
     def __init__(self, width, height, animation_fps, frames_list, *args, **kwargs):
         super().__init__(width, height, animation_fps, frames_list, *args, **kwargs)
         
-        self.content_font = tkFont.Font(family='Comic Sans Ms', size=18, weight="bold")
         
         self.load_frames()
         
@@ -68,8 +67,9 @@ class DifficultyFrame(gc.GameFrame):
         super().__init__(parent, root)
 
         # Title for difficulty level
+        self.background = gc.Sprite(0, 0, self.canvas, r'assets/Difficulty_page.png', anchor=tk.NW)
         label = tk.Label(self, text="Choose a Difficulty Level!",
-                         font=root.title_font, foreground="yellow", background="black")
+                         font=root.title_font, foreground="Black", background = "#c3eeff")
         label.grid(row=0, column=0, pady=(25, 25))
 
         # style easy medium hard buttons
