@@ -155,8 +155,10 @@ class GameFrame(gc.GameFrame):
         self.entry.place(x=400, y=244, anchor="n")
         def get_value(event):
             value = self.entry.get() 
-            return(value)
+            self.game_instance.check_answer(answer = value)
+            self.entry.delete(0,'end')
         self.entry.bind("<Return>", get_value)
+
         
 
         self.background1 = gc.Sprite(0, 0, self.canvas, r'assets/Background_Long.png', anchor=tk.NW)
@@ -194,7 +196,7 @@ class GameFrame(gc.GameFrame):
         
         self.game_instance.initiate_game(self.root.difficulty)
         self.game_instance.mouse_point = 40
-        #self.game_instance.check_answer(answer = self.entry)
+        
         
     def begin_starting_animation(self) -> None:
         self.begin_anim_playing = True

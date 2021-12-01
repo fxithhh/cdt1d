@@ -12,6 +12,8 @@ class GameScrambled():
     
     on_win_callback = None
     on_question_callback = None
+
+    results = []
     
     def next_question(self):
         self.question_index += 1
@@ -23,9 +25,9 @@ class GameScrambled():
         print("Unscramble this:", self.get_current_scrambled_word())
         self.on_question_callback(self.get_current_scrambled_word())
     
-    def check_answer(self, original_word, answer, skip: bool = False):
+    def check_answer(self, answer, skip: bool = False):
         c_time = self.get_question_time()
-        
+        original_word = self.get_current_original_word()
         question_points = 0
         
         # Check guesses
@@ -47,7 +49,7 @@ class GameScrambled():
                     question_points = 1
                 else:
                     question_points = 0
-                print(f"You have earned {question_points} points! Time: {self.time_diff_sec}s")
+                print(f"You have earned {question_points} points! Time: {c_time}s")
             else:
                 #wrong answer
                 question_points = -1
@@ -141,6 +143,7 @@ class GameScrambled():
         # List of random words
         self.rando_list = [self.randomize(word) for word in self.current_list]
         self.question_index = -1 # needs to offset the initial addition
+        self.results = []
         
         # Begin game timer
         self.game_time_start = timer()
