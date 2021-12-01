@@ -10,8 +10,12 @@ class GameScrambled():
     
     game_time_start: float = 0.0
     
+    cat_initial: int = 0
+    
     on_win_callback = None
     on_question_callback = None
+
+    results = []
     
     def next_question(self):
         self.question_index += 1
@@ -23,9 +27,9 @@ class GameScrambled():
         print("Unscramble this:", self.get_current_scrambled_word())
         self.on_question_callback(self.get_current_scrambled_word())
     
-    def check_answer(self, original_word, answer, skip: bool = False):
+    def check_answer(self, answer, skip: bool = False):
         c_time = self.get_question_time()
-        
+        original_word = self.get_current_original_word()
         question_points = 0
         
         # Check guesses
@@ -47,7 +51,7 @@ class GameScrambled():
                     question_points = 1
                 else:
                     question_points = 0
-                print(f"You have earned {question_points} points! Time: {self.time_diff_sec}s")
+                print(f"You have earned {question_points} points! Time: {c_time}s")
             else:
                 #wrong answer
                 question_points = -1
@@ -60,7 +64,7 @@ class GameScrambled():
         self.next_question()
     
     def check_cat_position(self):
-        self.cat_points = self.get_game_time() * 2 # Every 3 Sec cat_point +1
+        self.cat_points = self.get_game_time()*2 + self.cat_initial # Every 3 Sec cat_point +1
         
         # Lose Condition
         if self.get_cat_dist_from_mouse() < 0:
@@ -96,7 +100,7 @@ class GameScrambled():
         else:
             print("Something went wrong")
 
-    def randomize(self,word):
+    def randomize(self, word):
         letters = []
         for char in word:
             letters.append(char)
@@ -124,11 +128,12 @@ class GameScrambled():
     def get_game_time(self) -> float:
         return timer() - self.game_time_start
 
-    def initiate_game(self, difficulty):
+    def initiate_game(self, difficulty, cat_initial):
         self.difficulty = difficulty
         
         # Initialize values
-        self.mouse_point = 4
+        self.mouse_point = 0
+        self.cat_initial = cat_initial
         self.cat_points = 0
         
         # Input 1,2,3 should be button from tkinter
@@ -141,6 +146,7 @@ class GameScrambled():
         # List of random words
         self.rando_list = [self.randomize(word) for word in self.current_list]
         self.question_index = -1 # needs to offset the initial addition
+        self.results = []
         
         # Begin game timer
         self.game_time_start = timer()
