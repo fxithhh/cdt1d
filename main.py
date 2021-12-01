@@ -2,9 +2,11 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import font as tkFont
 
+from timeit import default_timer as timer
+from tkinter.constants import CURRENT
+
 import gameclasses as gc
 import check_value as cv
-import wordlist
 
 
 class MainApp(gc.GameRoot):
@@ -22,7 +24,6 @@ class MainApp(gc.GameRoot):
     def __init__(self, width, height, animation_fps, frames_list, *args, **kwargs):
         super().__init__(width, height, animation_fps, frames_list, *args, **kwargs)
         
-        self.content_font = tkFont.Font(family='Comic Sans Ms', size=18, weight="bold")
         
         self.load_frames()
         
@@ -68,9 +69,10 @@ class DifficultyFrame(gc.GameFrame):
         super().__init__(parent, root)
 
         # Title for difficulty level
+        self.background = gc.Sprite(0, 0, self.canvas, r'assets/Difficulty_page.png', anchor=tk.NW)
         label = tk.Label(self, text="Choose a Difficulty Level!",
-                         font=root.title_font, foreground="yellow", background="black")
-        label.grid(row=0, column=0, pady=(25, 25))
+                         font=root.title_font, foreground="Black", background = "#c3eeff", height=2)
+        label.grid(row=0, column=0, pady=(40, 0))
 
         # style easy medium hard buttons
         style = ttk.Style()
@@ -95,7 +97,7 @@ class DifficultyFrame(gc.GameFrame):
         buttonHard = ttk.Button(self, text="Hard", style="TButton",
                                 command=lambda: all_fn(3))
 
-        buttonEasy.grid(row=1, column=0, pady=(25,25))
+        buttonEasy.grid(row=1, column=0, pady=(60,25))
         buttonMed.grid(row=2, column=0, pady=(25,25))
         buttonHard.grid(row=3, column=0, pady=(25,25))
 
@@ -106,6 +108,30 @@ class GameFrame(gc.GameFrame):
     Inherits:
         gc.GameFrame
     """
+    
+    start_time: float = 0
+    scroll_speed: int = 200
+    
+    cat_sequence: list = [
+        r'assets/Cat_frame01.png',
+        r'assets/Cat_frame02.png',
+        r'assets/Cat_frame03.png',
+        r'assets/Cat_frame04.png',
+        r'assets/Cat_frame05.png',
+        r'assets/Cat_frame06.png',
+        r'assets/Cat_frame07.png',
+        r'assets/Cat_frame08.png',
+    ]
+    mouse_sequence = [
+        r'assets/Mouse_frame01.png',
+        r'assets/Mouse_frame02.png',
+        r'assets/Mouse_frame03.png',
+        r'assets/Mouse_frame04.png',
+        r'assets/Mouse_frame05.png',
+        r'assets/Mouse_frame06.png',
+        r'assets/Mouse_frame07.png',
+        r'assets/Mouse_frame08.png',
+    ]
 
     def __init__(self, parent, root):
         super().__init__(parent, root)
@@ -118,19 +144,31 @@ class GameFrame(gc.GameFrame):
         self.ans_canvas = tk.Canvas(self)
         self.ans_canvas.place(x=400, y=220, width=800, height=44, anchor='n')
         
-        self.background = gc.Sprite(0, 0, self.canvas, r'assets/background.png', anchor=tk.NW)
+        self.background1 = gc.Sprite(0, 0, self.canvas, r'assets/Background_Long.png', anchor=tk.NW)
+        self.background2 = gc.Sprite(1600, 0, self.canvas, r'assets/Background_Long.png', anchor=tk.NW)
+        
+        self.animated_cat = gc.AnimatedSprite(root, 200, 500, self.canvas, self.cat_sequence, subsample=2)
+        self.animated_mouse = gc.AnimatedSprite(root, 500, 550, self.canvas, self.mouse_sequence, subsample=4)
         
         # Debug button (goes to end screen)
-        button = tk.Button(self, text="End Game", command=lambda: root.show_frame(EndWinFrame))
+        button = tk.Button(self, text="End Game", command=lambda: root.show_frame(EndWinFrame), foreground = "red", background="#c3eeff", font="Papyrus")
         button.grid(row=2, column=2, sticky='se')
+        
+        self.enabled = False
 
         self.root.update_event.append(self.update)
     
     def on_enable(self) -> None:
         print(cv.set_current_list(self.root.difficulty))
+        self.start_time = timer()
         
     def update(self):
-        self.background.x += 3
+        if not self.enabled: return
+    
+        c_time = timer() - self.start_time
+        
+        self.canvas.coords(self.background1.sprite, int(-((c_time*self.scroll_speed + 1600) % 3200) + 1600), 0)
+        self.canvas.coords(self.background2.sprite, int(-((c_time*self.scroll_speed) % 3200) + 1600), 0)
 
 class EndWinFrame(gc.GameFrame):
     """Ending page on win.
@@ -146,7 +184,7 @@ class EndWinFrame(gc.GameFrame):
                          font=root.title_font,
                          image=self.background_image2,
                          compound = "center")
-        label.grid(row=0, column=0, sticky="nsew")
+        label.grid(row=0, column=0)
         
         # styling buttons
         style = ttk.Style()
@@ -187,7 +225,7 @@ class EndLoseFrame(gc.GameFrame):
 
 if __name__ == '__main__':
     width, height = 800, 600
-    animation_fps = 30
+    animation_fps = 60
     frame_list = [MainMenuFrame, DifficultyFrame, GameFrame, EndWinFrame, EndLoseFrame]
     
     app = MainApp(width, height, animation_fps, frame_list)

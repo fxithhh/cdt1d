@@ -52,11 +52,13 @@ class Sprite(GameObject):
             y (int): y position of the sprite.
             image_file (str): File path the image asset.
         """
-        self.sprite = tk.PhotoImage(file=image_file) #set var sprite by reading image through Tkinkter
+        
+        self.sprite_image = tk.PhotoImage(file=image_file) #set var sprite by reading image through Tkinkter
         if self.subsample:
-            self.sprite = self.sprite.subsample(self.subsample, self.subsample) #shrink the image 
-        self.canvas.create_image(x, y, image=self.sprite, anchor=self.anchor) #create canvas with the image in the x,y position anchored at the center 
-
+            self.sprite_image = self.sprite_image.subsample(self.subsample, self.subsample) #shrink the imag
+            
+        #create animation sprite by canvas with the image in the x,y position anchored at the center 
+        self.sprite = self.canvas.create_image(x, y, image=self.sprite_image, anchor=self.anchor) 
 
 class AnimatedSprite(Sprite):
     """Animated sprite class.
@@ -78,19 +80,16 @@ class AnimatedSprite(Sprite):
     #current_seq_index stores the index of the current frame in image_sequence, thus starting from the first frame
     current_seq_index: int = 0 
     
-    def __init__(self, root, x, y, canvas, image_sequence=image_sequence, anchor=tk.CENTER):
-        super().__init__(x, y, canvas, anchor=anchor) 
+    def __init__(self, root, x, y, canvas, image_sequence=image_sequence, subsample = None, anchor=tk.CENTER):
+        super().__init__(x, y, canvas, subsample=subsample, anchor=anchor)
         self.root = root
         self.image_sequence = image_sequence 
         self.root.update_event.append(self.update)
     
     def update(self):
-        # Rollover animation index once it reaches the end
-        if self.current_seq_index == len(self.image_sequence): 
-            self.current_seq_index = 0 
-
-        # Update animation index
-        self.current_seq_index += 1
+        
+        # Rollover animation index if reached the end
+        if self.current_seq_index == len(self.image_sequence): self.current_seq_index = 0
         
         # Update image
         self.update_sprite(self.x, self.y, self.image_sequence[self.current_seq_index])
@@ -157,8 +156,9 @@ class GameRoot(GameObject, tk.Tk):
     def __init__(self, width, height, animation_fps, frames_list, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
 
-        
-        self.title_font = tkfont.Font(family='Papyrus', size=18, weight="bold") #set a font for the text
+        # Fonts used
+        self.title_font = tkfont.Font(family='Comic Sans Ms', size=18, weight="bold")
+        self.content_font = tkfont.Font(family='Comic Sans Ms', size=18, weight="bold")
 
         self.width, self.height = width, height #fix the window dimensions
         self.animation_fps = animation_fps
