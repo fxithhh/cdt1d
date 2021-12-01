@@ -187,7 +187,7 @@ class GameRoot(GameObject, tk.Tk):
         """
         if page_class.__name__ in self.frames:
             # Disable previous frame (if any)
-            if self.current_frame and issubclass(type(self.current_frame), GameObject):
+            if self.current_frame and isinstance(self.current_frame, GameObject):
                 self.current_frame.enabled = False
                 self.current_frame.on_disable() #call back the disable frame function in the beginning
             
@@ -198,7 +198,7 @@ class GameRoot(GameObject, tk.Tk):
             self.current_frame = widget
             
             # Enable current frame
-            if issubclass(type(self.current_frame), GameObject):
+            if isinstance(self.current_frame, GameObject):
                 self.current_frame.enabled = True
                 self.current_frame.on_enable()
     
