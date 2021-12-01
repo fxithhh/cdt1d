@@ -38,8 +38,7 @@ class MainApp(tk.Tk):
         '''Show a frame for the given page name'''
         frame = self.frames[page_name]
         frame.tkraise()
-
-
+        
 class MainMenuFrame(tk.Frame):
     """Main menu page.
 
@@ -59,8 +58,7 @@ class MainMenuFrame(tk.Frame):
                             command=lambda: controller.show_frame("GameFrame"))
         button1.pack()
         button2.pack()
-
-
+        
 class DifficultyFrame(tk.Frame):
     """Difficulty selection page.
     
@@ -77,7 +75,6 @@ class DifficultyFrame(tk.Frame):
                            command=lambda: controller.show_frame("MainMenuFrame"))
         button.pack()
 
-
 class GameFrame(tk.Frame):
 
     def __init__(self, parent, controller):
@@ -87,6 +84,28 @@ class GameFrame(tk.Frame):
         label.pack(side="top", fill="x", pady=10)
         button = tk.Button(self, text="Go to the start page",
                            command=lambda: controller.show_frame("MainMenuFrame"))
+        button.pack()
+
+class EndWinFrame(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        label = tk.Label(self, text="This is page 2", font=controller.title_font)
+        label.pack(side="top", fill="x", pady=10)
+        button = tk.Button(self, text="Go to the start page",
+                        command=lambda: controller.show_frame("MainMenuFrame"))
+        button.pack()
+
+class EndLoseFrame(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        label = tk.Label(self, text="This is page 2", font=controller.title_font)
+        label.pack(side="top", fill="x", pady=10)
+        button = tk.Button(self, text="Go to the start page",
+                        command=lambda: controller.show_frame("MainMenuFrame"))
         button.pack()
 
 
