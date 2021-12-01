@@ -1,82 +1,94 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import font as tkfont
 
-def main() -> None:
-    """Main function. Runs TKinter window and everything else.
-    """
+class MainApp(tk.Tk):
+    """Main app class.
     
-    window = tk.Tk()
-    initialize_window(window, "Dont touch me", icon='./icon.ico')
-    
-    # Place a label on the root window
-    for _ in range(100):
-        ttk.Label(window, text="Peepeepoopoo!").pack()
-    
-    # Keep the window open until it is closed
-    window.mainloop()
-
-def initialize_window(window: tk.Tk, title: str, window_width: int = 300, window_height: int = 200, icon: str = None) -> None:
-    """Initializes the program window.
-
-    Args:
-        window (tk.Tk): Window instance.
-        title (str): Window title.
-        window_width (int, optional): Window width. Defaults to 300.
-        window_height (int, optional): Window height. Defaults to 200.
-        icon (str, optional): Icon path. Defaults to None.
+    Inherits:
+        tk.Tk
     """
 
-    window.title(title)
+    def __init__(self, *args, **kwargs):
+        tk.Tk.__init__(self, *args, **kwargs)
 
-    # Get the screen dimension
-    screen_width = window.winfo_screenwidth()
-    screen_height = window.winfo_screenheight()
+        self.title_font = tkfont.Font(family='Segoe UI', size=18, weight="bold", slant="italic")
 
-    # Find the center point
-    center_x = int(screen_width/2 - window_width / 2)
-    center_y = int(screen_height/2 - window_height / 2)
+        # the container is where we'll stack a bunch of frames
+        # on top of each other, then the one we want visible
+        # will be raised above the others
+        container = tk.Frame(self)
+        container.pack(side="top", fill="both", expand=True)
+        container.grid_rowconfigure(0, weight=1)
+        container.grid_columnconfigure(0, weight=1)
 
-    window.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
+        self.frames = {}
+        for F in (MainMenuFrame, DifficultyFrame, GameFrame):
+            page_name = F.__name__
+            frame = F(parent=container, controller=self)
+            self.frames[page_name] = frame
 
-    if icon:
-        window.iconbitmap(icon)
+            # put all of the pages in the same location;
+            # the one on the top of the stacking order
+            # will be the one that is visible.
+            frame.grid(row=0, column=0, sticky="nsew")
 
-def show_typing(window: tk.Tk, label: tk.Label, text: str) -> None:
-    label.config(text=text)
-    label.pack()
+        self.show_frame("MainMenuFrame")
 
-def main() -> None:
-    """Main function. Runs TKinter window and everything else.
+    def show_frame(self, page_name):
+        '''Show a frame for the given page name'''
+        frame = self.frames[page_name]
+        frame.tkraise()
+
+
+class MainMenuFrame(tk.Frame):
+    """Main menu page.
+
+    Inherits:
+        tk.Frame
+    """
+    
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        label = tk.Label(self, text="This is the start page", font=controller.title_font)
+        label.pack(side="top", fill="x", pady=10)
+
+        button1 = tk.Button(self, text="Go to Page One",
+                            command=lambda: controller.show_frame("DifficultyFrame"))
+        button2 = tk.Button(self, text="Go to Page Two",
+                            command=lambda: controller.show_frame("GameFrame"))
+        button1.pack()
+        button2.pack()
+
+
+class DifficultyFrame(tk.Frame):
+    """Difficulty selection page.
+    
+    Inherits:
+        tk.Frame
     """
 
-    window = tk.Tk()
-    initialize_window(window, "Dont touch me", icon='./icon.ico')
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        label = tk.Label(self, text="This is page 1", font=controller.title_font)
+        label.pack(side="top", fill="x", pady=10)
+        button = tk.Button(self, text="Go to the start page",
+                           command=lambda: controller.show_frame("MainMenuFrame"))
+        button.pack()
 
-    # Place a label on the root window
-    message = tk.Label(window, text="Peepeepoopoo!")
-    message.pack()
 
-    # Place button
-    button = tk.Button(
-        text="Click me!",
-        width=5,
-        height=3,
-        bg="blue",
-        fg="yellow",
-    )
-    button.pack()
+class GameFrame(tk.Frame):
 
-    # Place input
-    label = tk.Label(text="Name")
-    entry = tk.Entry(fg="yellow", bg="blue", width=10)
-    label.pack()
-    entry.pack()
-    label2 = tk.Label(window)
-
-    entry.bind('<Key>', lambda event: show_typing(window, label2, entry.get()))
-  
-    # Keep the window open until it is closed
-    window.mainloop()
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        label = tk.Label(self, text="This is page 2", font=controller.title_font)
+        label.pack(side="top", fill="x", pady=10)
+        button = tk.Button(self, text="Go to the start page",
+                           command=lambda: controller.show_frame("MainMenuFrame"))
+        button.pack()
 
 if __name__ == '__main__':
-    main()
+    app = MainApp()
+    app.mainloop()
