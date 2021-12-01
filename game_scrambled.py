@@ -10,6 +10,8 @@ class GameScrambled():
     
     game_time_start: float = 0.0
     
+    cat_initial: int = 0
+    
     on_win_callback = None
     on_question_callback = None
     
@@ -60,7 +62,7 @@ class GameScrambled():
         self.next_question()
     
     def check_cat_position(self):
-        self.cat_points = self.get_game_time() * 2 # Every 3 Sec cat_point +1
+        self.cat_points = self.get_game_time()*2 + self.cat_initial # Every 3 Sec cat_point +1
         
         # Lose Condition
         if self.get_cat_dist_from_mouse() < 0:
@@ -96,7 +98,7 @@ class GameScrambled():
         else:
             print("Something went wrong")
 
-    def randomize(self,word):
+    def randomize(self, word):
         letters = []
         for char in word:
             letters.append(char)
@@ -124,11 +126,12 @@ class GameScrambled():
     def get_game_time(self) -> float:
         return timer() - self.game_time_start
 
-    def initiate_game(self, difficulty):
+    def initiate_game(self, difficulty, cat_initial):
         self.difficulty = difficulty
         
         # Initialize values
-        self.mouse_point = 4
+        self.mouse_point = 0
+        self.cat_initial = cat_initial
         self.cat_points = 0
         
         # Input 1,2,3 should be button from tkinter
