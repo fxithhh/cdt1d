@@ -71,15 +71,16 @@ def initiate_game():
     #Mouse Speed
     mouse_point = 4
     #Input 1,2,3 should be button from tkinter
-    current_list = set_current_list(int(self.root.difficulty))
-    
+    current_list = set_current_list(int(input("1 or 2 or 3: ")))
+    #Shuffles order of words
+    random.shuffle(current_list)
     #list of random words
     rando_list = [randomize(word)for word in current_list]
     #Cat Points start
     global_time_start = time.time()
     results = []
     for index,rando_word in enumerate(rando_list):
-        print("Unscramble this: " + rando_word)
+        print("Unscramble this: " + rando_word.lower())
         add_point,add_tuple =check_answer(rando_word,current_list[index])
         mouse_point+=add_point
         #Check their guesses
