@@ -111,9 +111,12 @@ class GameFrame(GC.GameFrame):
         self.label = tk.Label(self, text="Unscramble the words",
                          font=root.title_font)
         self.label.grid(row=0, column=0, sticky="nsew")
-        button = tk.Button(self, text="End Game",
+        button = tk.Button(self, text="Win Game",
                            command=lambda: root.show_frame(EndWinFrame))
         button.grid(row=1, column=0)
+        button = tk.Button(self, text="Lose Game",
+                           command=lambda: root.show_frame(EndLoseFrame))
+        button.grid(row=2, column=0)
     
     def on_enable(self) -> None:
         print(cv.set_current_list(self.root.difficulty))
@@ -130,10 +133,11 @@ class EndWinFrame(GC.GameFrame):
 
     def __init__(self, parent, root):
         super().__init__(parent, root)
-        self.background_image2 = tk.PhotoImage(file=r"assets/8x6.png")
-        self.canvas.create_image(400, 300, anchor=tk.CENTER, image=self.background_image2)
+        self.background_image2 = tk.PhotoImage(file="./assets/8x6.png")
         label = tk.Label(self, text="You Win!",
-                         font=root.title_font)
+                         font=root.title_font,
+                         image=self.background_image2,
+                         compound = "center")
         label.grid(row=0, column=0, sticky="nsew")
         
         # styling buttons
@@ -145,7 +149,7 @@ class EndWinFrame(GC.GameFrame):
                               ('active', 'white')])
         button = ttk.Button(self, text="Play Again",
                            command=lambda: root.show_frame(MainMenuFrame))
-        button.grid(row=1, column=0)
+        button.grid(row=0, column=0, pady=(100,0))
 
 
 class EndLoseFrame(GC.GameFrame):
@@ -157,9 +161,11 @@ class EndLoseFrame(GC.GameFrame):
 
     def __init__(self, parent, root):
         super().__init__(parent, root)
-        
+        self.background_image3 = tk.PhotoImage(file="./assets/house.png")
         label = tk.Label(self, text="You ded lol",
-                         font=root.title_font)
+                         font=root.title_font,
+                         image = self.background_image3,
+                         compound = "center")
         label.grid(row=0, column=0, sticky="nsew")
 
         # styling buttons
