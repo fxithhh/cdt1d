@@ -33,9 +33,10 @@ class Sprite(GameObject):
         GameObject, tk.Frame
     """ 
         
-    def __init__(self, x, y, canvas, sprite_image=None, anchor=tk.CENTER):
+    def __init__(self, x, y, canvas, sprite_image=None, subsample = None, anchor=tk.CENTER):
         self.x, self.y = x, y
         self.anchor = anchor
+        self.subsample = subsample
             
         self.canvas = canvas
         
@@ -51,7 +52,8 @@ class Sprite(GameObject):
             image_file (str): File path the image asset.
         """
         self.sprite = tk.PhotoImage(file=image_file)
-        self.sprite = self.sprite.subsample(2, 2)
+        if self.subsample:
+            self.sprite = self.sprite.subsample(self.subsample, self.subsample)
         self.canvas.create_image(x, y, image=self.sprite, anchor=self.anchor)
 
 class AnimatedSprite(Sprite):

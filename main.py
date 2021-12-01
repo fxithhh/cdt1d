@@ -109,28 +109,28 @@ class GameFrame(gc.GameFrame):
 
     def __init__(self, parent, root):
         super().__init__(parent, root)
-        
-        # Make sure the center column/row does not expand
-        self.grid_rowconfigure(0, weight=1)
-        self.grid_rowconfigure(1, weight=0)
-        self.grid_rowconfigure(2, weight=1)
-        self.grid_columnconfigure(0, weight=1)
-        self.grid_columnconfigure(1, weight=0)
-        self.grid_columnconfigure(2, weight=1)
+        self.root = root
         
         # Title Label
-        self.label = tk.Label(self, text="Unscramble the words", font=root.title_font)
-        self.label.grid(row=0, column=1, sticky='s')
+        self.label = tk.Label(self, text="Unscramble the WORD", font=root.content_font)
+        self.label.place(x=400, y=200, anchor='s')
+        
+        self.ans_canvas = tk.Canvas(self)
+        self.ans_canvas.place(x=400, y=220, width=800, height=44, anchor='n')
+        
+        self.background = gc.Sprite(0, 0, self.canvas, r'assets/background.png', anchor=tk.NW)
         
         # Debug button (goes to end screen)
-        button = tk.Button(self, text="Win Game", command=lambda: root.show_frame(EndWinFrame))
-        button.grid(row=1, column=1)
+        button = tk.Button(self, text="End Game", command=lambda: root.show_frame(EndWinFrame))
+        button.grid(row=2, column=2, sticky='se')
 
-        button = tk.Button(self, text="Lose Game", command=lambda: root.show_frame(EndLoseFrame))
-        button.grid(row=2, column=1)
+        self.root.update_event.append(self.update)
     
     def on_enable(self) -> None:
         print(cv.set_current_list(self.root.difficulty))
+        
+    def update(self):
+        self.background.x += 3
 
 class EndWinFrame(gc.GameFrame):
     """Ending page on win.
