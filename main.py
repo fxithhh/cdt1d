@@ -149,7 +149,16 @@ class GameFrame(gc.GameFrame):
         
         self.ans_canvas = tk.Canvas(self)
         self.ans_canvas.place(x=400, y=220, width=800, height=88, anchor='n')
+
+        var=tk.StringVar()
+        self.entry = ttk.Entry(self, width=20, font=14, textvariable=var)
+        self.entry.place(x=400, y=244, anchor="n")
+        def get_value(event):
+            value = self.entry.get() 
+            return(value)
+        self.entry.bind("<Return>", get_value)
         
+
         self.background1 = gc.Sprite(0, 0, self.canvas, r'assets/Background_Long.png', anchor=tk.NW)
         self.background2 = gc.Sprite(1600, 0, self.canvas, r'assets/Background_Long.png', anchor=tk.NW)
         
@@ -185,8 +194,7 @@ class GameFrame(gc.GameFrame):
         
         self.game_instance.initiate_game(self.root.difficulty)
         self.game_instance.mouse_point = 40
-        self.game_instance.get_current_scrambled_word()
-        
+        #self.game_instance.check_answer(answer = self.entry)
         
     def begin_starting_animation(self) -> None:
         self.begin_anim_playing = True
