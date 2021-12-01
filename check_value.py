@@ -72,7 +72,7 @@ def main():
     #Mouse Speed
     mouse_point = 2
     #Input 1,2,3 should be button from tkinter
-    current_list = set_current_list(int(input("Set 1,2,3 : ")))
+    current_list = set_current_list(int(self.root.difficulty))
     
     #list of random words
     rando_list = [randomize(word)for word in current_list]
