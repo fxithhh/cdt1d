@@ -154,7 +154,7 @@ class GameFrame(gc.GameFrame):
         self.background2 = gc.Sprite(1600, 0, self.canvas, r'assets/Background_Long.png', anchor=tk.NW)
         
         self.animated_cat = gc.AnimatedSprite(root, 200, 500, self.canvas, self.cat_sequence, subsample=2)
-        self.animated_mouse = gc.AnimatedSprite(root, 500, 550, self.canvas, self.mouse_sequence, subsample=4)
+        self.animated_mouse = gc.AnimatedSprite(root, 600, 550, self.canvas, self.mouse_sequence, subsample=4)
         
         self.tree = gc.Sprite(100, 590, self.canvas, r'assets/tree.png', anchor=tk.S)
         self.house = gc.Sprite(1200, 590, self.canvas, r'assets/house.png', anchor=tk.S)
@@ -168,6 +168,7 @@ class GameFrame(gc.GameFrame):
         button.grid(row=0, column=2, sticky='se')
         
         self.game_instance = game.GameScrambled()
+        self.game_instance.on_win_callback = self.on_win
         
         self.enabled = False
 
@@ -178,6 +179,7 @@ class GameFrame(gc.GameFrame):
         self.begin_starting_animation()
         print(self.root.difficulty)
         self.game_instance.initiate_game(self.root.difficulty)
+        self.game_instance.mouse_point = 40
         
     def begin_starting_animation(self) -> None:
         self.begin_anim_playing = True
@@ -189,13 +191,21 @@ class GameFrame(gc.GameFrame):
         self.canvas.coords(self.house.sprite, 1200, 590)
         self.end_anim_start = timer()
         
+    def on_win(self, win_type: int) -> None:
+        print(f'Win type: {win_type}')
+        
     def update(self):
         if not self.enabled: return
     
         c_time = self.get_time()
         
+        self.game_instance.check_cat_position()
+        
         self.canvas.coords(self.background1.sprite, int(-((c_time*self.scroll_speed + 1600) % 3200) + 1600), 0)
         self.canvas.coords(self.background2.sprite, int(-((c_time*self.scroll_speed) % 3200) + 1600), 0)
+        self.canvas.coords(self.animated_cat.sprite, int(550 - (550/40)*self.game_instance.get_cat_dist_from_mouse()), 500)
+        
+        self.score_label.config(text=f'Score: {self.game_instance.get_mouse_points()}')
         
         if self.begin_anim_playing:
             c_begin_time = timer() - self.begin_anim_start
