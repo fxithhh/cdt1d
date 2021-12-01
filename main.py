@@ -3,6 +3,7 @@ from tkinter import ttk
 from tkinter import font as tkFont
 
 import gameclasses as GC
+import check_value as cv
 
 # Import word list
 import wordlist
@@ -22,9 +23,6 @@ class MainApp(GC.GameRoot):
 
     def __init__(self, width, height, frame_delay, frames_list, *args, **kwargs):
         super().__init__(width, height, frame_delay, frames_list, *args, **kwargs)
-
-        self.title_font = tkFont.Font(
-            family='Papyrus', size=18, weight="bold", slant="italic")
         
         self.content_font = tkFont.Font(
             family='Comic Sans Ms', size=18, weight="bold", slant="italic")
@@ -46,9 +44,6 @@ class MainMenuFrame(GC.GameFrame):
         
         self.background_image = tk.PhotoImage(file="giphy.gif")
         self.canvas.create_image(400, 300, anchor=tk.CENTER, image=self.background_image)
-        
-        button1 = tk.Button(self, text="Start",
-                            command=lambda: root.show_frame(DifficultyFrame))
 
         # self.canvas.pack()
         # label = tk.Label(self, text="This is the start page", font=root.title_font)
@@ -63,7 +58,7 @@ class MainMenuFrame(GC.GameFrame):
         # create button
         startBtn = ttk.Button(self, text="Start", style="C.TButton",
                               command=lambda: root.show_frame(DifficultyFrame))
-        startBtn.grid(row=0, column=0)
+        startBtn.grid(row=1, column=0)
 
 
 class DifficultyFrame(GC.GameFrame):
@@ -79,7 +74,7 @@ class DifficultyFrame(GC.GameFrame):
         # Title for difficulty level
         label = tk.Label(self, text="Choose a Difficulty Level!",
                          font=root.title_font, foreground="yellow", background="black")
-        label.grid(row=0, column=0, sticky="nsew")
+        label.grid(row=0, column=0)
 
         # style easy medium hard buttons
         style = ttk.Style()
@@ -104,9 +99,9 @@ class DifficultyFrame(GC.GameFrame):
         buttonHard = ttk.Button(self, text="Hard", style="TButton",
                                 command=lambda: all_fn(3))
 
-        buttonEasy.grid(row=0, column=0)
-        buttonMed.grid(row=0, column=0)
-        buttonHard.grid(row=0, column=0)
+        buttonEasy.grid(row=1, column=0)
+        buttonMed.grid(row=2, column=0)
+        buttonHard.grid(row=3, column=0)
 
 
 class GameFrame(GC.GameFrame):
@@ -119,12 +114,16 @@ class GameFrame(GC.GameFrame):
     def __init__(self, parent, root):
         super().__init__(parent, root)
         
-        label = tk.Label(self, text="Unscramble the words",
+        self.label = tk.Label(self, text="Unscramble the words",
                          font=root.title_font)
-        label.grid(row=0, column=0, sticky="nsew")
+        self.label.grid(row=0, column=0, sticky="nsew")
         button = tk.Button(self, text="End Game",
                            command=lambda: root.show_frame(EndWinFrame))
-        button.grid(row=0, column=0)
+        button.grid(row=1, column=0)
+    
+    def on_enable(self) -> None:
+        print(cv.set_current_list(self.root.difficulty))
+        
         
 
 
@@ -141,9 +140,17 @@ class EndWinFrame(GC.GameFrame):
         label = tk.Label(self, text="You Win!",
                          font=root.title_font)
         label.grid(row=0, column=0, sticky="nsew")
-        button = tk.Button(self, text="Play Again",
+
+        # styling buttons
+        style = ttk.Style()
+        style.configure("TButton", font=root.content_font)
+        style.map("TButton",
+                  foreground=[('pressed', 'red'), ('active', 'blue')],
+                  background=[('pressed', '!disabled', 'black'),
+                              ('active', 'white')])
+        button = ttk.Button(self, text="Play Again",
                            command=lambda: root.show_frame(MainMenuFrame))
-        button.grid(row=0, column=0)
+        button.grid(row=1, column=0)
 
 
 class EndLoseFrame(GC.GameFrame):
@@ -159,9 +166,17 @@ class EndLoseFrame(GC.GameFrame):
         label = tk.Label(self, text="You ded lol",
                          font=root.title_font)
         label.grid(row=0, column=0, sticky="nsew")
-        button = tk.Button(self, text="Try Again!",
+
+        # styling buttons
+        style = ttk.Style()
+        style.configure("TButton", font=root.content_font)
+        style.map("TButton",
+                  foreground=[('pressed', 'red'), ('active', 'blue')],
+                  background=[('pressed', '!disabled', 'black'),
+                              ('active', 'white')])
+        button = ttk.Button(self, text="Try Again!",
                            command=lambda: root.show_frame(MainMenuFrame))
-        button.grid(row=0, column=0)
+        button.grid(row=1, column=0)
 
 if __name__ == '__main__':
     width, height = 800, 600

@@ -98,5 +98,5 @@ def main():
         print(twin_values)
     print(mouse_point)
 
-
-main()
+if __name__ == "__main__":
+    main()
