@@ -180,6 +180,8 @@ class GameFrame(gc.GameFrame):
         print(self.root.difficulty)
         self.game_instance.initiate_game(self.root.difficulty)
         self.game_instance.mouse_point = 40
+        self.game_instance.get_current_scrambled_word()
+        
         
     def begin_starting_animation(self) -> None:
         self.begin_anim_playing = True
@@ -212,6 +214,7 @@ class GameFrame(gc.GameFrame):
         self.canvas.coords(self.animated_cat.sprite, int(500 - (500/40)*self.game_instance.get_cat_dist_from_mouse()), 500)
         
         self.score_label.config(text=f'Score: {self.game_instance.get_mouse_points()}')
+        self.label.config(text=f'{self.game_instance.get_current_scrambled_word()}')
         
         if self.begin_anim_playing:
             c_begin_time = timer() - self.begin_anim_start
