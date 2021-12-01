@@ -1,117 +1,91 @@
 import tkinter as tk
-from tkinter import Tk, ttk
-from tkinter import font as tkfont
-from tkinter.constants import ANCHOR, CENTER, NW
-# import list of words
-from wordlist import *
+from tkinter import ttk
+from tkinter import font as tkFont
+
+import gameclasses as GC
+
+# Import word list
+import wordlist
 
 
-
-class MainApp(tk.Tk):
+class MainApp(GC.GameRoot):
     """Main app class.
 
     Inherits:
-        tk.Tk
+        GC.GameRoot
+        
+    Members:
+        difficulty [int]: Currently selected difficulty level of the game. [0, 1, 2] Easy -> Hard.
     """
 
-    difficulty = 0
+    difficulty: int = 1
 
-    def __init__(self, *args, **kwargs):
-        tk.Tk.__init__(self, *args, **kwargs)
+    def __init__(self, width, height, frame_delay, frames_list, *args, **kwargs):
+        super().__init__(width, height, frame_delay, frames_list, *args, **kwargs)
 
-        self.title_font = tkfont.Font(
+        self.title_font = tkFont.Font(
             family='Papyrus', size=18, weight="bold", slant="italic")
+        
+        self.show_frame(MainMenuFrame)
 
-        # the container is where we'll stack a bunch of frames
-        # on top of each other, then the one we want visible
-        # will be raised above the others
-        container = tk.Frame(self)
-        container.pack(side="top", fill="both", expand=True)
-        container.grid_rowconfigure(0, weight=1)
-        container.grid_columnconfigure(0, weight=1)
-
-        self.frames = {}
-        for F in (MainMenuFrame, DifficultyFrame, GameFrame, EndWinFrame, EndLoseFrame):
-            page_name = F.__name__
-            frame = F(parent=container, controller=self)
-            self.frames[page_name] = frame
-
-            # put all of the pages in the same location;
-            # the one on the top of the stacking order
-            # will be the one that is visible.
-            frame.grid(row=0, column=0, sticky="nsew")
-
-        self.show_frame("MainMenuFrame")
-
-    def show_frame(self, page_name):
-        '''Show a frame for the given page name'''
-        frame = self.frames[page_name]
-        frame.tkraise()
-
-
-class MainMenuFrame(tk.Frame):
+class MainMenuFrame(GC.GameFrame):
     """Main menu page.
 
     Inherits:
-        tk.Frame
+        GC.GameFrame
     """
    
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-        self.controller = controller
-        self.background_image = tk.PhotoImage(file="giphy.gif")
+    def __init__(self, parent, root):
+        super().__init__(parent, root)
         
-        C = tk.Canvas(self, height=600, width=800)
-        C.pack(fill = "both", expand = True)
-        C.create_image(400,300, anchor=CENTER,image=self.background_image)
+        
+        self.background_image = tk.PhotoImage(file="giphy.gif")
+        self.canvas.create_image(400, 300, anchor=tk.CENTER, image=self.background_image)
+        
         button1 = tk.Button(self, text="Start",
-                            command=lambda: controller.show_frame("DifficultyFrame"))
+                            command=lambda: root.show_frame(DifficultyFrame))
 
-        # C.pack()
+        # self.canvas.pack()
         # label = tk.Label(self, text="This is the start page", font=controller.title_font)
         # label.pack(side="top", fill="x", pady=10)
         style = ttk.Style()
         style.map("C.TButton",
                   foreground=[('pressed', 'red'), ('active', 'blue')],
                   background=[('pressed', '!disabled', 'black'),
-                              ('active', 'white')]
-                  )
+                              ('active', 'white')])
+        
         # create button
         startBtn = ttk.Button(self, text="Start", style="C.TButton",
-                              command=lambda: controller.show_frame(
-                                  "DifficultyFrame")
-                              )
-        startBtn.pack()
+                              command=lambda: root.show_frame(DifficultyFrame))
+        startBtn.grid(row=0, column=0)
 
 
-class DifficultyFrame(tk.Frame):
+class DifficultyFrame(GC.GameFrame):
     """Difficulty selection page.
 
     Inherits:
-        tk.Frame
+        GC.GameFrame
     """
 
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-        self.controller = controller
+    def __init__(self, parent, root):
+        super().__init__(parent, root)
 
         # Title for difficulty level
         label = tk.Label(self, text="Choose a Difficulty Level!",
-                         font=controller.title_font, foreground="yellow", background="black")
-        label.pack(side="top", fill="x", pady=10)
+                         font=root.title_font, foreground="yellow", background="black")
+        label.grid(row=0, column=0, sticky="nsew")
 
         # style easy medium hard buttons
         style = ttk.Style()
         style.map("TButton",
                   foreground=[('pressed', 'red'), ('active', 'blue')],
                   background=[('pressed', '!disabled', 'black'),
-                              ('active', 'white')]
-                  )
+                              ('active', 'white')])
 
         
         def all_fn(val):
-            controller.show_frame("GameFrame")
-            controller.difficulty = val
+            root.show_frame(GameFrame)
+            root.difficulty = val
             print(val)
            
         # easy medium hard level buttons
@@ -124,51 +98,69 @@ class DifficultyFrame(tk.Frame):
         buttonHard = ttk.Button(self, text="Hard", style="TButton",
                                 command=lambda: all_fn(3))
 
-        buttonEasy.pack()
-        buttonMed.pack()
-        buttonHard.pack()
+        buttonEasy.grid(row=0, column=0)
+        buttonMed.grid(row=0, column=0)
+        buttonHard.grid(row=0, column=0)
 
 
-class GameFrame(DifficultyFrame, tk.Frame):
+class GameFrame(GC.GameFrame):
+    """Main game page.
 
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-        self.controller = controller
+    Inherits:
+        GC.GameFrame
+    """
+
+    def __init__(self, parent, root):
+        super().__init__(parent, root)
+        
         label = tk.Label(self, text="Unscramble the words",
-                         font=controller.title_font)
-        label.pack(side="top", fill="x", pady=10)
+                         font=root.title_font)
+        label.grid(row=0, column=0, sticky="nsew")
         button = tk.Button(self, text="End Game",
-                           command=lambda: controller.show_frame("EndWinFrame"))
-        button.pack()
+                           command=lambda: root.show_frame(EndWinFrame))
+        button.grid(row=0, column=0)
         
 
 
-class EndWinFrame(tk.Frame):
+class EndWinFrame(GC.GameFrame):
+    """Ending page on win.
 
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-        self.controller = controller
+    Inherits:
+        GC.GameFrame
+    """
+
+    def __init__(self, parent, root):
+        super().__init__(parent, root)
+        
         label = tk.Label(self, text="You Win!",
-                         font=controller.title_font)
-        label.pack(side="top", fill="x", pady=10)
+                         font=root.title_font)
+        label.grid(row=0, column=0, sticky="nsew")
         button = tk.Button(self, text="Play Again",
-                           command=lambda: controller.show_frame("MainMenuFrame"))
-        button.pack()
+                           command=lambda: root.show_frame(MainMenuFrame))
+        button.grid(row=0, column=0)
 
 
-class EndLoseFrame(tk.Frame):
+class EndLoseFrame(GC.GameFrame):
+    """Ending page on lose.
 
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-        self.controller = controller
+    Inherits:
+        GC.GameFrame
+    """
+
+    def __init__(self, parent, root):
+        super().__init__(parent, root)
+        
         label = tk.Label(self, text="You ded lol",
-                         font=controller.title_font)
-        label.pack(side="top", fill="x", pady=10)
+                         font=root.title_font)
+        label.grid(row=0, column=0, sticky="nsew")
         button = tk.Button(self, text="Try Again!",
-                           command=lambda: controller.show_frame("MainMenuFrame"))
-        button.pack()
-
+                           command=lambda: root.show_frame(MainMenuFrame))
+        button.grid(row=0, column=0)
 
 if __name__ == '__main__':
-    app = MainApp()
+    width, height = 800, 600
+    frame_delay = 1000//60
+    frame_list = [MainMenuFrame, DifficultyFrame, GameFrame, EndWinFrame, EndLoseFrame]
+    
+    app = MainApp(width, height, frame_delay, frame_list)
     app.mainloop()
