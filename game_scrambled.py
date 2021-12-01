@@ -10,7 +10,7 @@ class GameScrambled():
     
     game_time_start: float = 0.0
     
-    on_win_callback: function = None
+    on_win_callback = None
     
     def start_question(self, question_num):
         if question_num >= len(self.rando_list):
@@ -72,13 +72,16 @@ class GameScrambled():
         if win:
             if epic_win:
                 print("DAYUM you left the cat in the dust!!!")
-                self.on_win_callback(2)
+                if self.on_win_callback:
+                    self.on_win_callback(2)
             else:
                 print("Winner winner chicken dinner!")
-                self.on_win_callback(1)
+                if self.on_win_callback:
+                    self.on_win_callback(1)
         else:
             print("Caught by cat!")
-            self.on_win_callback(0)
+            if self.on_win_callback:
+                self.on_win_callback(0)
 
     # call the list from wordlist.py    
     def set_current_list(self):
@@ -122,8 +125,9 @@ class GameScrambled():
     def initiate_game(self, difficulty):
         self.difficulty = difficulty
         
-        # Mouse Speed
+        # Initialize values
         self.mouse_point = 4
+        self.cat_points = 0
         
         # Input 1,2,3 should be button from tkinter
         self.current_list = self.set_current_list()
@@ -132,24 +136,12 @@ class GameScrambled():
         # Shuffles order of words
         random.shuffle(self.current_list)
         
-        # list of random words
+        # List of random words
         self.rando_list = [self.randomize(word) for word in self.current_list]
         self.question_index = 0
         
-        # Cat Points start
-        global_time_start = timer()
-        self.results = []
-
-        #Check all the guess and answers
-        print("Let's see your answers!")
-        for twin_values in self.results:
-            print(twin_values)
-        if self.got_win == True:
-            print("You won!")
-        elif self.got_win == False:
-            print("You've turned into Ratatoullie")
-        else:
-            print("Barely got by")
+        # Begin game timer
+        self.game_time_start = timer()
 
 if __name__ == "__main__":
     gamestart = GameScrambled()
