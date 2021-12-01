@@ -102,10 +102,11 @@ class GameFrame(GameObject, tk.Frame):
     def __init__(self, parent, root):
         tk.Frame.__init__(self, parent)
 
-        self.grid_rowconfigure(0, weight=1)
+        self.grid_rowconfigure(4, weight=1)
         self.grid_columnconfigure(0, weight=1)
             
-        self.canvas = tk.Canvas(self, background='white')
+        self.canvas = tk.Canvas(self, background='red')
+        self.canvas.grid(row=0, column=0, rowspan= 5, sticky="nsew")
         
         # Make sure that the canvas covers everything
         self.canvas.grid(row=0, column=0, sticky="nsew", columnspan=100, rowspan=100)

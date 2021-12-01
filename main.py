@@ -54,7 +54,7 @@ class MainMenuFrame(gc.GameFrame):
         # create button
         startBtn = ttk.Button(self, text="Start", style="C.TButton",
                               command=lambda: root.show_frame(DifficultyFrame))
-        startBtn.grid(row=0, column=0, pady=(80, 0))
+        startBtn.grid(row=0, column=0, rowspan= 5, pady=(80, 0))
 
 
 class DifficultyFrame(gc.GameFrame):
@@ -70,7 +70,7 @@ class DifficultyFrame(gc.GameFrame):
         # Title for difficulty level
         label = tk.Label(self, text="Choose a Difficulty Level!",
                          font=root.title_font, foreground="yellow", background="black")
-        label.grid(row=0, column=0)
+        label.grid(row=0, column=0, pady=(25, 25))
 
         # style easy medium hard buttons
         style = ttk.Style()
@@ -95,9 +95,9 @@ class DifficultyFrame(gc.GameFrame):
         buttonHard = ttk.Button(self, text="Hard", style="TButton",
                                 command=lambda: all_fn(3))
 
-        buttonEasy.grid(row=1, column=0)
-        buttonMed.grid(row=2, column=0)
-        buttonHard.grid(row=3, column=0)
+        buttonEasy.grid(row=1, column=0, pady=(25,25))
+        buttonMed.grid(row=2, column=0, pady=(25,25))
+        buttonHard.grid(row=3, column=0, pady=(25,25))
 
 
 class GameFrame(gc.GameFrame):
@@ -141,10 +141,11 @@ class EndWinFrame(gc.GameFrame):
 
     def __init__(self, parent, root):
         super().__init__(parent, root)
-        self.background_image2 = tk.PhotoImage(file=r"assets/8x6.png")
-        self.canvas.create_image(400, 300, anchor=tk.CENTER, image=self.background_image2)
+        self.background_image2 = tk.PhotoImage(file="./assets/8x6.png")
         label = tk.Label(self, text="You Win!",
-                         font=root.title_font)
+                         font=root.title_font,
+                         image=self.background_image2,
+                         compound = "center")
         label.grid(row=0, column=0, sticky="nsew")
         
         # styling buttons
@@ -156,7 +157,7 @@ class EndWinFrame(gc.GameFrame):
                               ('active', 'white')])
         button = ttk.Button(self, text="Play Again",
                            command=lambda: root.show_frame(MainMenuFrame))
-        button.grid(row=1, column=0)
+        button.grid(row=0, column=0, pady=(100,0))
 
 class EndLoseFrame(gc.GameFrame):
     """Ending page on lose.
@@ -167,9 +168,11 @@ class EndLoseFrame(gc.GameFrame):
 
     def __init__(self, parent, root):
         super().__init__(parent, root)
-        
+        self.background_image3 = tk.PhotoImage(file="./assets/house.png")
         label = tk.Label(self, text="You ded lol",
-                         font=root.title_font)
+                         font=root.title_font,
+                         image = self.background_image3,
+                         compound = "center")
         label.grid(row=0, column=0, sticky="nsew")
 
         # styling buttons
