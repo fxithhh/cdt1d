@@ -193,6 +193,9 @@ class GameFrame(gc.GameFrame):
         
     def on_win(self, win_type: int) -> None:
         print(f'Win type: {win_type}')
+        self.enabled = False
+        self.animated_cat.enabled = False
+        self.animated_mouse.enabled = False
         
     def update(self):
         if not self.enabled: return
@@ -203,7 +206,7 @@ class GameFrame(gc.GameFrame):
         
         self.canvas.coords(self.background1.sprite, int(-((c_time*self.scroll_speed + 1600) % 3200) + 1600), 0)
         self.canvas.coords(self.background2.sprite, int(-((c_time*self.scroll_speed) % 3200) + 1600), 0)
-        self.canvas.coords(self.animated_cat.sprite, int(550 - (550/40)*self.game_instance.get_cat_dist_from_mouse()), 500)
+        self.canvas.coords(self.animated_cat.sprite, int(500 - (500/40)*self.game_instance.get_cat_dist_from_mouse()), 500)
         
         self.score_label.config(text=f'Score: {self.game_instance.get_mouse_points()}')
         
