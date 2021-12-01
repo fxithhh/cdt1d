@@ -12,13 +12,13 @@ class GameScrambled():
         return self.user_answer
 
 
-    def check_answer(self,scrambled_word, original_word):
+    def check_answer(self, scrambled_word, original_word):
         start_time = time.time()
         useranswer = self.get_answer()
         end_time = time.time()
         self.time_diff_sec = end_time - start_time
         #Take too long to guess
-        if time_diff_sec >=10:
+        if self.time_diff_sec >=10:
             point = 0
             print( "Give up/Times up. \n 0 Points.\n Next ones coming")
             return point,(useranswer,original_word)
@@ -29,15 +29,15 @@ class GameScrambled():
             return point,("Skipped",original_word)
         #correct answer
         if useranswer.lower() == original_word.lower():
-            if 0 <= time_diff_sec < 4:
+            if 0 <= self.time_diff_sec < 4:
                 point = 5
-            elif 4 <= time_diff_sec < 8:
+            elif 4 <= self.time_diff_sec < 8:
                 point = 4
-            elif 8 <= time_diff_sec < 12:
+            elif 8 <= self.time_diff_sec < 12:
                 point = 3
-            elif 12 <= time_diff_sec < 16:
+            elif 12 <= self.time_diff_sec < 16:
                 point = 2
-            elif 16 <= time_diff_sec < 32:
+            elif 16 <= self.time_diff_sec < 32:
                 point = 1
             else:
                 self.point = 0
@@ -128,6 +128,5 @@ class GameScrambled():
             print("Barely got by")
 
 if __name__ == "__main__":
-    gamestart = Gamescrambled(1)
-    
+    gamestart = GameScrambled(1)
     gamestart.initiate_game()
