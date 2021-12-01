@@ -2,18 +2,16 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import font as tkFont
 
-import gameclasses as GC
+import gameclasses as gc
 import check_value as cv
-
-# Import word list
 import wordlist
 
 
-class MainApp(GC.GameRoot):
+class MainApp(gc.GameRoot):
     """Main app class.
 
     Inherits:
-        GC.GameRoot
+        gc.GameRoot
         
     Members:
         difficulty [int]: Currently selected difficulty level of the game. [0, 1, 2] Easy -> Hard.
@@ -21,8 +19,8 @@ class MainApp(GC.GameRoot):
 
     difficulty: int = 1
 
-    def __init__(self, width, height, frame_delay, frames_list, *args, **kwargs):
-        super().__init__(width, height, frame_delay, frames_list, *args, **kwargs)
+    def __init__(self, width, height, animation_fps, frames_list, *args, **kwargs):
+        super().__init__(width, height, animation_fps, frames_list, *args, **kwargs)
         
         self.content_font = tkFont.Font(
             family='Comic Sans Ms', size=18, weight="bold", slant="italic")
@@ -31,11 +29,11 @@ class MainApp(GC.GameRoot):
         
         self.show_frame(MainMenuFrame)
 
-class MainMenuFrame(GC.GameFrame):
+class MainMenuFrame(gc.GameFrame):
     """Main menu page.
 
     Inherits:
-        GC.GameFrame
+        gc.GameFrame
     """
    
     def __init__(self, parent, root):
@@ -61,11 +59,11 @@ class MainMenuFrame(GC.GameFrame):
         startBtn.grid(row=1, column=0)
 
 
-class DifficultyFrame(GC.GameFrame):
+class DifficultyFrame(gc.GameFrame):
     """Difficulty selection page.
 
     Inherits:
-        GC.GameFrame
+        gc.GameFrame
     """
 
     def __init__(self, parent, root):
@@ -104,34 +102,40 @@ class DifficultyFrame(GC.GameFrame):
         buttonHard.grid(row=3, column=0)
 
 
-class GameFrame(GC.GameFrame):
+class GameFrame(gc.GameFrame):
     """Main game page.
 
     Inherits:
-        GC.GameFrame
+        gc.GameFrame
     """
 
     def __init__(self, parent, root):
         super().__init__(parent, root)
         
-        self.label = tk.Label(self, text="Unscramble the words",
-                         font=root.title_font)
-        self.label.grid(row=0, column=0, sticky="nsew")
-        button = tk.Button(self, text="End Game",
-                           command=lambda: root.show_frame(EndWinFrame))
-        button.grid(row=1, column=0)
+        # Make sure the center column/row does not expand
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_rowconfigure(1, weight=0)
+        self.grid_rowconfigure(2, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(1, weight=0)
+        self.grid_columnconfigure(2, weight=1)
+        
+        # Title Label
+        self.label = tk.Label(self, text="Unscramble the words", font=root.title_font)
+        self.label.grid(row=0, column=1, sticky='s')
+        
+        # Debug button (goes to end screen)
+        button = tk.Button(self, text="End Game", command=lambda: root.show_frame(EndWinFrame))
+        button.grid(row=2, column=2, sticky='se')
     
     def on_enable(self) -> None:
         print(cv.set_current_list(self.root.difficulty))
-        
-        
 
-
-class EndWinFrame(GC.GameFrame):
+class EndWinFrame(gc.GameFrame):
     """Ending page on win.
 
     Inherits:
-        GC.GameFrame
+        gc.GameFrame
     """
 
     def __init__(self, parent, root):
@@ -152,12 +156,11 @@ class EndWinFrame(GC.GameFrame):
                            command=lambda: root.show_frame(MainMenuFrame))
         button.grid(row=1, column=0)
 
-
-class EndLoseFrame(GC.GameFrame):
+class EndLoseFrame(gc.GameFrame):
     """Ending page on lose.
 
     Inherits:
-        GC.GameFrame
+        gc.GameFrame
     """
 
     def __init__(self, parent, root):
@@ -174,14 +177,14 @@ class EndLoseFrame(GC.GameFrame):
                   foreground=[('pressed', 'red'), ('active', 'blue')],
                   background=[('pressed', '!disabled', 'black'),
                               ('active', 'white')])
-        button = ttk.Button(self, text="Try Again!",
-                           command=lambda: root.show_frame(MainMenuFrame))
+        button = ttk.Button(self, text="Try Again!", command=lambda: root.show_frame(MainMenuFrame))
         button.grid(row=1, column=0)
 
 if __name__ == '__main__':
     width, height = 800, 600
-    frame_delay = 1000//60
+    animation_fps = 30
     frame_list = [MainMenuFrame, DifficultyFrame, GameFrame, EndWinFrame, EndLoseFrame]
     
-    app = MainApp(width, height, frame_delay, frame_list)
+    app = MainApp(width, height, animation_fps, frame_list)
+    app.resizable(False, False)
     app.mainloop()
