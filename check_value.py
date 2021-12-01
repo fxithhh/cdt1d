@@ -80,7 +80,7 @@ def initiate_game():
     global_time_start = time.time()
     results = []
     for index,rando_word in enumerate(rando_list):
-        print("Unscramble this: " + rando_word)
+        print("Unscramble this: " + rando_word.lower())
         add_point,add_tuple =check_answer(rando_word,current_list[index])
         mouse_point+=add_point
         #Check their guesses
