@@ -58,7 +58,7 @@ class GameScrambled():
         self.next_question()
     
     def check_cat_position(self):
-        self.cat_points = self.get_game_time() // 3 # Every 3 Sec cat_point +1
+        self.cat_points = self.get_game_time() * 2 # Every 3 Sec cat_point +1
         
         # Lose Condition
         if self.get_cat_dist_from_mouse() < 0:
