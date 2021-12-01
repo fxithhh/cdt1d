@@ -107,11 +107,11 @@ class GameFrame(GameObject, tk.Frame):
             
         self.root = root
 
-        self.grid_rowconfigure(0, weight=1)
+        self.grid_rowconfigure(4, weight=1)
         self.grid_columnconfigure(0, weight=1)
             
-        self.canvas = tk.Canvas(self, background='white')
-        self.canvas.grid(row=0, column=0, sticky="nsew")
+        self.canvas = tk.Canvas(self, background='red')
+        self.canvas.grid(row=0, column=0, rowspan= 5, sticky="nsew")
         
     def update(self):
         super().update()

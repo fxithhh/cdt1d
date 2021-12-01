@@ -52,7 +52,7 @@ class MainMenuFrame(GC.GameFrame):
         # create button
         startBtn = ttk.Button(self, text="Start", style="C.TButton",
                               command=lambda: root.show_frame(DifficultyFrame))
-        startBtn.grid(row=0, column=0, pady=(80, 0))
+        startBtn.grid(row=0, column=0, rowspan= 5, pady=(80, 0))
 
 
 class DifficultyFrame(GC.GameFrame):
@@ -68,7 +68,7 @@ class DifficultyFrame(GC.GameFrame):
         # Title for difficulty level
         label = tk.Label(self, text="Choose a Difficulty Level!",
                          font=root.title_font, foreground="yellow", background="black")
-        label.grid(row=0, column=0)
+        label.grid(row=0, column=0, pady=(25, 25))
 
         # style easy medium hard buttons
         style = ttk.Style()
@@ -93,9 +93,9 @@ class DifficultyFrame(GC.GameFrame):
         buttonHard = ttk.Button(self, text="Hard", style="TButton",
                                 command=lambda: all_fn(3))
 
-        buttonEasy.grid(row=1, column=0)
-        buttonMed.grid(row=2, column=0)
-        buttonHard.grid(row=3, column=0)
+        buttonEasy.grid(row=1, column=0, pady=(25,25))
+        buttonMed.grid(row=2, column=0, pady=(25,25))
+        buttonHard.grid(row=3, column=0, pady=(25,25))
 
 
 class GameFrame(GC.GameFrame):
