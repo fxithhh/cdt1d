@@ -1,6 +1,10 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import Tk, ttk
 from tkinter import font as tkfont
+from tkinter.constants import ANCHOR, CENTER, NW
+# import list of words
+from wordlist import *
+
 
 
 class MainApp(tk.Tk):
@@ -9,6 +13,8 @@ class MainApp(tk.Tk):
     Inherits:
         tk.Tk
     """
+
+    difficulty = 0
 
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
@@ -49,16 +55,15 @@ class MainMenuFrame(tk.Frame):
     Inherits:
         tk.Frame
     """
-
+   
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
-        # waiting for png files
-        # C = tk.Canvas(self, bg='blue', height=500, width=500)
-        # background_image = tk.PhotoImage(file='./assets/Cat_frame01.png')
-        # background_label = tk.Label(self, image=background_image)
-        # background_label.place(x=0, y=0, relwidth=1, relheight=1)
-
+        self.background_image = tk.PhotoImage(file="giphy.gif")
+        
+        C = tk.Canvas(self, height=600, width=800)
+        C.pack(fill = "both", expand = True)
+        C.create_image(400,300, anchor=CENTER,image=self.background_image)
         button1 = tk.Button(self, text="Start",
                             command=lambda: controller.show_frame("DifficultyFrame"))
 
@@ -71,15 +76,12 @@ class MainMenuFrame(tk.Frame):
                   background=[('pressed', '!disabled', 'black'),
                               ('active', 'white')]
                   )
-        button1 = ttk.Button(self, text="Start", style="C.TButton",
-                             command=lambda: controller.show_frame(
-                                 "DifficultyFrame")
-                             )
-        # button2 = ttk.Button(self, text="Go to Page Two", style="C.TButton",
-        #                     command=lambda: controller.show_frame("GameFrame"))
-
-        button1.pack()
-        # button2.pack()
+        # create button
+        startBtn = ttk.Button(self, text="Start", style="C.TButton",
+                              command=lambda: controller.show_frame(
+                                  "DifficultyFrame")
+                              )
+        startBtn.pack()
 
 
 class DifficultyFrame(tk.Frame):
@@ -106,22 +108,28 @@ class DifficultyFrame(tk.Frame):
                               ('active', 'white')]
                   )
 
+        
+        def all_fn(val):
+            controller.show_frame("GameFrame")
+            controller.difficulty = val
+            print(val)
+           
         # easy medium hard level buttons
         buttonEasy = ttk.Button(self, text="Easy", style="TButton",
-                                command=lambda: controller.show_frame("GameFrame"))
+                                command=lambda: all_fn(1))
 
         buttonMed = ttk.Button(self, text="Medium", style="TButton",
-                               command=lambda: controller.show_frame("GameFrame"))
+                               command=lambda: all_fn(2))
 
         buttonHard = ttk.Button(self, text="Hard", style="TButton",
-                                command=lambda: controller.show_frame("GameFrame"))
+                                command=lambda: all_fn(3))
 
         buttonEasy.pack()
         buttonMed.pack()
         buttonHard.pack()
 
 
-class GameFrame(tk.Frame):
+class GameFrame(DifficultyFrame, tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -132,6 +140,7 @@ class GameFrame(tk.Frame):
         button = tk.Button(self, text="End Game",
                            command=lambda: controller.show_frame("EndWinFrame"))
         button.pack()
+        
 
 
 class EndWinFrame(tk.Frame):
