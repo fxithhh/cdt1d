@@ -302,7 +302,7 @@ class EndLoseFrame(gc.GameFrame):
                               ('active', 'white')])
         button = ttk.Button(self, text="Play Again",
                            command=lambda: root.show_frame(MainMenuFrame))
-        button.grid(row=0, column=0)
+        button.place(x=400,y=535, anchor = "n")
 
 if __name__ == '__main__':
     width, height = 800, 600
