@@ -7,9 +7,9 @@ class GameScrambled():
     def __init__(self,difficulty):
         self.difficulty = difficulty
 
-    def check_answer(self, original_word, answer):
+    def check_answer(self ,original_word):
         start_time = time.time()
-        useranswer = answer
+        useranswer = "answer" #place holder string
         end_time = time.time()
         self.time_diff_sec = end_time - start_time
         #Take too long to guess
@@ -89,7 +89,7 @@ class GameScrambled():
         self.results = []
         for index,rando_word in enumerate(self.rando_list):
             print("Unscramble this: " + rando_word.lower())
-            add_point,add_tuple =self.check_answer(rando_word,self.current_list[index])
+            add_point,add_tuple =self.check_answer(self.current_list[index])
             self.mouse_point+=add_point
             #Check their guesses
             self.results.append(add_tuple)
