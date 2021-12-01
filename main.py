@@ -49,6 +49,7 @@ class MainMenuFrame(GC.GameFrame):
         # label = tk.Label(self, text="This is the start page", font=controller.title_font)
         # label.pack(side="top", fill="x", pady=10)
         style = ttk.Style()
+        style.configure("C.TButton", font=controller.content_font)
         style.map("C.TButton",
                   foreground=[('pressed', 'red'), ('active', 'blue')],
                   background=[('pressed', '!disabled', 'black'),
@@ -77,17 +78,17 @@ class DifficultyFrame(GC.GameFrame):
 
         # style easy medium hard buttons
         style = ttk.Style()
+        style.configure("TButton", font=controller.content_font)
         style.map("TButton",
                   foreground=[('pressed', 'red'), ('active', 'blue')],
                   background=[('pressed', '!disabled', 'black'),
                               ('active', 'white')])
 
-        
         def all_fn(val):
             root.show_frame(GameFrame)
             root.difficulty = val
             print(val)
-           
+
         # easy medium hard level buttons
         buttonEasy = ttk.Button(self, text="Easy", style="TButton",
                                 command=lambda: all_fn(1))
