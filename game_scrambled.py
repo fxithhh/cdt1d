@@ -7,7 +7,7 @@ class GameScrambled():
     
     def check_answer(self, original_word, answer):
         start_time = time.time()
-        useranswer = "answer" #place holder string
+        useranswer = answer
         end_time = time.time()
         self.time_diff_sec = end_time - start_time
         
@@ -40,6 +40,27 @@ class GameScrambled():
         else:
             print("Wrong answer. Points -3")
             point = -3
+            
+        print("Unscramble this: " + self.rando_word.lower())
+        add_point, add_tuple = self.check_answer(self.current_list[index])
+        self.mouse_point+=add_point
+        # Check their guesses
+        self.results.append(add_tuple)
+        global_time_end = time.time()
+        self.cat_points = (global_time_end - global_time_start)//3 # Every 3 Sec cat_point +1
+        self.cat_dist_from_mouse = self.mouse_point - self.cat_points
+        # Lose Condition
+        if self.cat_points > self.mouse_point:
+            print("Caught by cat")
+            self.got_win = False
+
+        # Win condition 50 pts to win
+        if self.cat_dist_from_mouse>=45:
+            print("You left the cat in the dust.")
+            self.got_win = True
+
+        self.got_win = None
+        
         return point,(useranswer,original_word)
 
     # call the list from wordlist.py    
@@ -69,48 +90,29 @@ class GameScrambled():
     def get_cat_dist_from_mouse(self):
         return self.cat_dist_from_mouse
 
-    #TIME TAKEN TO ANSWER EACH QUESTION
+    # TIME TAKEN TO ANSWER EACH QUESTION
     def get_time_taken_answer(self):
         return self.time_diff_sec
 
     def initiate_game(self, difficulty):
         self.difficulty = difficulty
         
-        #Mouse Speed
+        # Mouse Speed
         self.mouse_point = 4
         
-        #Input 1,2,3 should be button from tkinter
+        # Input 1,2,3 should be button from tkinter
         self.current_list = self.set_current_list()
-        print("testing testing", self.difficulty, self.current_list)
+        print("Difficulty:", self.difficulty, self.current_list)
         
-        #Shuffles order of words
+        # Shuffles order of words
         random.shuffle(self.current_list)
-        #list of random words
+        
+        # list of random words
         self.rando_list = [self.randomize(word) for word in self.current_list]
-        #Cat Points start
+        
+        # Cat Points start
         global_time_start = time.time()
         self.results = []
-        for index, rando_word in enumerate(self.rando_list):
-            print("Unscramble this: " + rando_word.lower())
-            add_point,add_tuple =self.check_answer(self.current_list[index])
-            self.mouse_point+=add_point
-            #Check their guesses
-            self.results.append(add_tuple)
-            global_time_end = time.time()
-            self.cat_points = (global_time_end - global_time_start)//3 # Every 3 Sec cat_point +1
-            self.cat_dist_from_mouse = self.mouse_point - self.cat_points
-            #Lose Condition
-            if self.cat_points > self.mouse_point:
-                print("Caught by cat")
-                self.got_win = False
-                break
-
-            #Win condition 50 pts to win
-            if self.cat_dist_from_mouse>=45:
-                print("You left the cat in the dust.")
-                self.got_win = True
-                break
-            self.got_win = None
 
         #Check all the guess and answers
         print("Let's see your answers!")
