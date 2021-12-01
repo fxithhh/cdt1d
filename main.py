@@ -89,6 +89,7 @@ class GameFrame(tk.Frame):
                            command=lambda: controller.show_frame("MainMenuFrame"))
         button.pack()
 
+
 if __name__ == '__main__':
     app = MainApp()
     app.mainloop()
