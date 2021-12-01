@@ -4,14 +4,13 @@ from wordlist import *
 
 #Request user input
 class GameScrambled():
-    def __init__(self,difficulty):
-        self.difficulty = difficulty
-
+    
     def check_answer(self, original_word, answer):
         start_time = time.time()
         useranswer = answer
         end_time = time.time()
         self.time_diff_sec = end_time - start_time
+        
         #Take too long to guess
         if self.time_diff_sec >=10:
             point = 0
@@ -43,7 +42,7 @@ class GameScrambled():
             point = -3
         return point,(useranswer,original_word)
 
-    #Call the list from wordlist.py    
+    # call the list from wordlist.py    
     def set_current_list(self):
         if self.difficulty == 1:
             return easyword
@@ -53,7 +52,6 @@ class GameScrambled():
             return hardword
         else:
             print("Something went wrong")
-
 
     def randomize(self,word):
         letters = []
@@ -75,19 +73,24 @@ class GameScrambled():
     def get_time_taken_answer(self):
         return self.time_diff_sec
 
-    def initiate_game(self):
+    def initiate_game(self, difficulty):
+        self.difficulty = difficulty
+        
         #Mouse Speed
         self.mouse_point = 4
+        
         #Input 1,2,3 should be button from tkinter
         self.current_list = self.set_current_list()
+        print("testing testing", self.difficulty, self.current_list)
+        
         #Shuffles order of words
         random.shuffle(self.current_list)
         #list of random words
-        self.rando_list = [self.randomize(word)for word in self.current_list]
+        self.rando_list = [self.randomize(word) for word in self.current_list]
         #Cat Points start
         global_time_start = time.time()
         self.results = []
-        for index,rando_word in enumerate(self.rando_list):
+        for index, rando_word in enumerate(self.rando_list):
             print("Unscramble this: " + rando_word.lower())
             add_point,add_tuple =self.check_answer(rando_word,self.current_list[index])
             self.mouse_point+=add_point
@@ -109,7 +112,6 @@ class GameScrambled():
                 break
             self.got_win = None
 
-        
         #Check all the guess and answers
         print("Let's see your answers!")
         for twin_values in self.results:
@@ -122,5 +124,5 @@ class GameScrambled():
             print("Barely got by")
 
 if __name__ == "__main__":
-    gamestart = GameScrambled(1)
-    gamestart.initiate_game()
+    gamestart = GameScrambled()
+    gamestart.initiate_game(2)

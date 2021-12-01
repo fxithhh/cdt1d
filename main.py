@@ -82,8 +82,8 @@ class DifficultyFrame(gc.GameFrame):
                               ('active', 'white')])
 
         def all_fn(val):
-            root.show_frame(GameFrame)
             root.difficulty = val
+            root.show_frame(GameFrame)
             print(val)
 
         # easy medium hard level buttons
@@ -167,6 +167,8 @@ class GameFrame(gc.GameFrame):
         button = tk.Button(self, text="End Game", command=lambda: root.show_frame(EndWinFrame), foreground = "red", background="#C3EEFF", font="Papyrus")
         button.grid(row=0, column=2, sticky='se')
         
+        self.game_instance = game.GameScrambled()
+        
         self.enabled = False
 
         self.root.update_event.append(self.update)
@@ -174,8 +176,8 @@ class GameFrame(gc.GameFrame):
     def on_enable(self) -> None:
         self.start_time = timer()
         self.begin_starting_animation()
-        self.game_instance = game.GameScrambled(self.root.difficulty)
-        self.game_instance.initiate_game()
+        print(self.root.difficulty)
+        self.game_instance.initiate_game(self.root.difficulty)
         
     def begin_starting_animation(self) -> None:
         self.begin_anim_playing = True
