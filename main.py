@@ -167,6 +167,14 @@ class GameFrame(gc.GameFrame):
         button = tk.Button(self, text="End Game", command=lambda: root.show_frame(EndWinFrame), foreground = "red", background="#C3EEFF", font="Papyrus")
         button.grid(row=0, column=2, sticky='se')
         
+        var = tk.StringVar()
+        entry = tk.Entry(self, width=35, textvariable=var)
+        entry.grid(row=0, column = 0)
+        def ans_input():
+            return var.get()
+
+
+
         self.enabled = False
 
         self.root.update_event.append(self.update)
