@@ -19,7 +19,7 @@ class MainApp(tk.Tk):
         tk.Tk.__init__(self, *args, **kwargs)
 
         self.title_font = tkfont.Font(
-            family='Segoe UI', size=18, weight="bold", slant="italic")
+            family='Papyrus', size=18, weight="bold", slant="italic")
 
         # the container is where we'll stack a bunch of frames
         # on top of each other, then the one we want visible
@@ -87,7 +87,7 @@ class DifficultyFrame(tk.Frame):
 
         # Title for difficulty level
         label = tk.Label(self, text="Choose a Difficulty Level!",
-                         font=controller.title_font)
+                         font=controller.title_font, foreground="yellow", background="black")
         label.pack(side="top", fill="x", pady=10)
 
         # style easy medium hard buttons
