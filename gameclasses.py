@@ -105,11 +105,11 @@ class GameFrame(GameObject, tk.Frame):
     def __init__(self, parent, root):
         tk.Frame.__init__(self, parent)
         
-        self.grid_rowconfigure(0, weight=1) 
+        self.grid_rowconfigure(4, weight=1) 
         self.grid_columnconfigure(0, weight=1)
             
         self.canvas = tk.Canvas(self, background='red') #create a canvas that will host all the sprites for the cat animation
-        self.canvas.grid(row=0, column=0, sticky="nsew", columnspan=100, rowspan=100) # Make sure that the canvas covers everything
+        self.canvas.grid(row=0, column=0, columnspan=5, rowspan=5, sticky="nsew") # Make sure that the canvas covers everything
         
 class DemoFrame(GameFrame): #For testing purposes only, to make sure the animation sprite works well
     def __init__(self, parent, root):

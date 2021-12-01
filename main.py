@@ -5,7 +5,7 @@ from tkinter import font as tkFont
 from timeit import default_timer as timer
 
 import gameclasses as gc
-import gamescrambled as game
+import GameScrambled as game
 
 
 class MainApp(gc.GameRoot):
@@ -96,7 +96,7 @@ class DifficultyFrame(gc.GameFrame):
         buttonHard = ttk.Button(self, text="Hard", style="TButton",
                                 command=lambda: all_fn(3))
 
-        buttonEasy.grid(row=1, column=0, pady=(60,25))
+        buttonEasy.grid(row=1, column=0, pady=(25,25))
         buttonMed.grid(row=2, column=0, pady=(25,25))
         buttonHard.grid(row=3, column=0, pady=(25,25))
 
