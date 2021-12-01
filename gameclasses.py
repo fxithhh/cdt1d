@@ -89,6 +89,7 @@ class AnimatedSprite(Sprite):
     def update(self):
         
         # Rollover animation index if reached the end
+        self.current_seq_index += 1
         if self.current_seq_index == len(self.image_sequence): self.current_seq_index = 0
         
         # Update image
@@ -103,6 +104,9 @@ class GameFrame(GameObject, tk.Frame):
     
     def __init__(self, parent, root):
         tk.Frame.__init__(self, parent)
+        
+        self.grid_rowconfigure(0, weight=1) 
+        self.grid_columnconfigure(0, weight=1)
             
         self.canvas = tk.Canvas(self, background='red') #create a canvas that will host all the sprites for the cat animation
         self.canvas.grid(row=0, column=0, sticky="nsew", columnspan=100, rowspan=100) # Make sure that the canvas covers everything
