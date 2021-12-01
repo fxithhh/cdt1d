@@ -122,11 +122,20 @@ class GameRoot(GameObject, tk.Tk):
     
     Inherits:
         GameObject, tk.Tk
+    
+    Members:
+        f_list [list]: List of frames that represent different game screens.
+        current_frame [tk.Frame]: Currently active frame.
+        container [tk.Frame]: Base container to contain all the game frames.
+        
+        width [int]: Window width.
+        height [int]: Window height.
+        frame_delay [int]: Delay between update frames in ms.
     """
     
     # Frame list
-    F_LIST: list = [AnimationFrame,]
-    current_frame = None
+    f_list: list = []
+    current_frame: tk.Frame = None
     
     # Window sizes
     width: int = 800
@@ -135,12 +144,13 @@ class GameRoot(GameObject, tk.Tk):
     # Game loop settings
     frame_delay: int = 1000//30
 
-    def __init__(self, width, height, frame_delay, *args, **kwargs):
+    def __init__(self, width, height, frame_delay, frames_list, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
 
         self.title_font = tkfont.Font(family='Segoe UI', size=18, weight="bold")
         self.width, self.height = width, height
         self.frame_delay = frame_delay
+        self.f_list = frames_list
         
         # Window size
         self.geometry(f'{self.width}x{self.height}')
@@ -148,19 +158,19 @@ class GameRoot(GameObject, tk.Tk):
         # The container is where we'll stack a bunch of frames
         # on top of each other, then the one we want visible
         # will be raised above the others
-        container = tk.Frame(self)
-        container.pack(side="top", fill="both", expand=True)
-        container.grid_rowconfigure(0, weight=1)
-        container.grid_columnconfigure(0, weight=1)
+        self.container = tk.Frame(self)
+        self.container.pack(side="top", fill="both", expand=True)
+        self.container.grid_rowconfigure(0, weight=1)
+        self.container.grid_columnconfigure(0, weight=1)
 
         # Put all of the pages in the same location;
         # the one on the top of the stacking order
         # will be the one that is visible.
         self.frames = {}
         self.game_children = []
-        for widget_class in self.F_LIST:
+        for widget_class in self.f_list:
             page_name = widget_class.__name__
-            widget = widget_class(parent=container, root=self)
+            widget = widget_class(parent=self.container, root=self)
             self.frames[page_name] = widget
             
             # Add the frames to the GameObject index
@@ -200,5 +210,9 @@ class GameRoot(GameObject, tk.Tk):
         self.after(self.frame_delay, self.update)
 
 if __name__ == '__main__':
-    app = GameRoot()
+    width, height = 800, 600
+    frame_delay = 1000//60
+    frame_list = [AnimationFrame,]
+    
+    app = GameRoot(width, height, frame_delay, frame_list)
     app.mainloop()
