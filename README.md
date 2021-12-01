@@ -5,5 +5,5 @@
 # Every point moves the Mouse forward
 # The Cat is in constant motion chasing you
 # The faster you unscramble the words, the faster the Mouse goes
-# If you make a mistake, the Mouse gets stunned for 3 seconds!
+# If you make a mistake, the Mouse gets stunned for 2 seconds!
 # Press // to skip a question if its too hard
