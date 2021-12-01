@@ -108,15 +108,19 @@ class GameFrame(GameObject, tk.Frame):
         # Make sure that the canvas covers everything
         self.canvas.grid(row=0, column=0, sticky="nsew", columnspan=100, rowspan=100)
         
-        mouse_sequence = [r'assets/Mouse_frame01.png',
-                          r'assets/Mouse_frame02.png',
-                          r'assets/Mouse_frame03.png',
-                          r'assets/Mouse_frame04.png',
-                          r'assets/Mouse_frame05.png',
-                          r'assets/Mouse_frame06.png',
-                          r'assets/Mouse_frame07.png',
-                          r'assets/Mouse_frame08.png',]
+class DemoFrame(GameFrame):
+    def __init__(self, parent, root):
+        super().__init__(parent, root)
         
+        mouse_sequence = [r'assets/Mouse_frame01.png',
+                        r'assets/Mouse_frame02.png',
+                        r'assets/Mouse_frame03.png',
+                        r'assets/Mouse_frame04.png',
+                        r'assets/Mouse_frame05.png',
+                        r'assets/Mouse_frame06.png',
+                        r'assets/Mouse_frame07.png',
+                        r'assets/Mouse_frame08.png',]
+                
         self.animated_cat = AnimatedSprite(root, 500, 500, self.canvas)
         self.animated_mouse = AnimatedSprite(root, 200, 500, self.canvas, mouse_sequence)
                 
@@ -218,9 +222,9 @@ class GameRoot(GameObject, tk.Tk):
 if __name__ == '__main__':
     width, height = 800, 600
     animation_fps = 30
-    frame_list = [GameFrame,]
+    frame_list = [DemoFrame,]
     
     app = GameRoot(width, height, animation_fps, frame_list)
     app.load_frames()
-    app.show_frame(GameFrame)
+    app.show_frame(DemoFrame)
     app.mainloop()
