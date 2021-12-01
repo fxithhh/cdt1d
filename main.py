@@ -24,7 +24,6 @@ class MainApp(gc.GameRoot):
     def __init__(self, width, height, animation_fps, frames_list, *args, **kwargs):
         super().__init__(width, height, animation_fps, frames_list, *args, **kwargs)
         
-        self.content_font = tkFont.Font(family='Comic Sans Ms', size=18, weight="bold")
         
         self.load_frames()
         
@@ -70,9 +69,10 @@ class DifficultyFrame(gc.GameFrame):
         super().__init__(parent, root)
 
         # Title for difficulty level
+        self.background = gc.Sprite(0, 0, self.canvas, r'assets/Difficulty_page.png', anchor=tk.NW)
         label = tk.Label(self, text="Choose a Difficulty Level!",
-                         font=root.title_font, foreground="yellow", background="black")
-        label.grid(row=0, column=0, pady=(25, 25))
+                         font=root.title_font, foreground="Black", background = "#c3eeff", height=2)
+        label.grid(row=0, column=0, pady=(40, 0))
 
         # style easy medium hard buttons
         style = ttk.Style()
@@ -97,7 +97,7 @@ class DifficultyFrame(gc.GameFrame):
         buttonHard = ttk.Button(self, text="Hard", style="TButton",
                                 command=lambda: all_fn(3))
 
-        buttonEasy.grid(row=1, column=0, pady=(25,25))
+        buttonEasy.grid(row=1, column=0, pady=(60,25))
         buttonMed.grid(row=2, column=0, pady=(25,25))
         buttonHard.grid(row=3, column=0, pady=(25,25))
 
@@ -151,7 +151,7 @@ class GameFrame(gc.GameFrame):
         self.animated_mouse = gc.AnimatedSprite(root, 500, 550, self.canvas, self.mouse_sequence, subsample=4)
         
         # Debug button (goes to end screen)
-        button = tk.Button(self, text="End Game", command=lambda: root.show_frame(EndWinFrame))
+        button = tk.Button(self, text="End Game", command=lambda: root.show_frame(EndWinFrame), foreground = "red", background="#c3eeff", font="Papyrus")
         button.grid(row=2, column=2, sticky='se')
         
         self.enabled = False
@@ -184,7 +184,7 @@ class EndWinFrame(gc.GameFrame):
                          font=root.title_font,
                          image=self.background_image2,
                          compound = "center")
-        label.grid(row=0, column=0, sticky="nsew")
+        label.grid(row=0, column=0)
         
         # styling buttons
         style = ttk.Style()
