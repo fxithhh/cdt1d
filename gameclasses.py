@@ -105,6 +105,7 @@ class GameFrame(GameObject, tk.Frame):
     def __init__(self, parent, root):
         tk.Frame.__init__(self, parent)
         
+        #make the frame fill up the entire screen because it does not by default    
         self.grid_rowconfigure(0, weight=1) 
         self.grid_columnconfigure(0, weight=1)
             
