@@ -2,15 +2,14 @@ import time
 import random
 from wordlist import *
 #Request user input
-def get_answer(scrambled_word):
-    user_answer = input(
-        "[{}]\n[//] to pass. \nUnscrambled word: ".format(scrambled_word))
+def get_answer():
+    user_answer = input("[//] to pass. \nUnscrambled word: ")
     return user_answer
 
 
 def check_answer(scrambled_word, original_word):
     start_time = time.time()
-    useranswer = get_answer(scrambled_word)
+    useranswer = get_answer()
     end_time = time.time()
     time_diff_sec = end_time - start_time
     #Take too long to guess
@@ -41,7 +40,7 @@ def check_answer(scrambled_word, original_word):
         print("You have earned {} points!".format(point))
     #wrong answer
     else:
-        print("Wrong answer. You have been stunned for 2 seconds. Points -2")
+        print("Wrong answer. Man mode for 2 seconds. Points -2")
         point = -2
         time.sleep(2)
     return point,(useranswer,original_word)
@@ -68,35 +67,51 @@ def randomize(word):
     return ''.join(letters)
 
 
-def main():
+def initiate_game():
     #Mouse Speed
-    mouse_point = 2
+    mouse_point = 4
     #Input 1,2,3 should be button from tkinter
-    current_list = set_current_list(int(input("Set 1,2,3 : ")))
-    
+    current_list = set_current_list(int(input("1 or 2 or 3: ")))
+    #Shuffles order of words
+    random.shuffle(current_list)
     #list of random words
     rando_list = [randomize(word)for word in current_list]
     #Cat Points start
     global_time_start = time.time()
     results = []
     for index,rando_word in enumerate(rando_list):
-        print("Unscramble this: " + rando_word)
+        print("Unscramble this: " + rando_word.lower())
         add_point,add_tuple =check_answer(rando_word,current_list[index])
         mouse_point+=add_point
         #Check their guesses
         results.append(add_tuple)
         global_time_end = time.time()
-        cat_points = (global_time_end - global_time_start)//4 # Every 4 Sec cat_point +1
-        
+        cat_points = (global_time_end - global_time_start)//3 # Every 3 Sec cat_point +1
+        cat_dist_from_mouse = mouse_point - cat_points
         #Lose Condition
         if cat_points > mouse_point:
             print("Caught by cat")
+            got_win = False
             break
+
+        #Win condition 50 pts to win
+        if cat_dist_from_mouse>=45:
+            print("You left the cat in the dust.")
+            got_win = True
+            break
+        got_win = None
+
     
     #Check all the guess and answers
+    print("Let's see your answers!")
     for twin_values in results:
         print(twin_values)
-    print(mouse_point)
+    if got_win == True:
+        print("You won!")
+    elif got_win == False:
+        print("You've turned into Ratatoullie")
+    else:
+        print("Barely got by")
 
 if __name__ == "__main__":
-    main()
+    initiate_game()

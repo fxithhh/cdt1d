@@ -22,8 +22,6 @@ class MainApp(gc.GameRoot):
     def __init__(self, width, height, animation_fps, frames_list, *args, **kwargs):
         super().__init__(width, height, animation_fps, frames_list, *args, **kwargs)
         
-        self.content_font = tkFont.Font(
-            family='Comic Sans Ms', size=18, weight="bold", slant="italic")
         
         self.load_frames()
         
@@ -40,23 +38,22 @@ class MainMenuFrame(gc.GameFrame):
         super().__init__(parent, root)
         
         
-        self.background_image = tk.PhotoImage(file="giphy.gif")
+        self.background_image = tk.PhotoImage(file="./assets/home_bg.png")
         self.canvas.create_image(400, 300, anchor=tk.CENTER, image=self.background_image)
 
         # self.canvas.pack()
         # label = tk.Label(self, text="This is the start page", font=root.title_font)
         # label.pack(side="top", fill="x", pady=10)
         style = ttk.Style()
-        style.configure("C.TButton", font=root.content_font)
+        style.configure("C.TButton", font=root.content_font, background = '#ff7733', foreground = '#cc0000')
         style.map("C.TButton",
-                  foreground=[('pressed', 'red'), ('active', 'blue')],
-                  background=[('pressed', '!disabled', 'black'),
-                              ('active', 'white')])
+                  foreground=[('active', '#006622')],
+                  background=[('active', '#00cc44')])
         
         # create button
         startBtn = ttk.Button(self, text="Start", style="C.TButton",
                               command=lambda: root.show_frame(DifficultyFrame))
-        startBtn.grid(row=1, column=0)
+        startBtn.grid(row=0, column=0, pady=(80, 0))
 
 
 class DifficultyFrame(gc.GameFrame):
@@ -140,11 +137,12 @@ class EndWinFrame(gc.GameFrame):
 
     def __init__(self, parent, root):
         super().__init__(parent, root)
-        
+        self.background_image2 = tk.PhotoImage(file=r"assets/8x6.png")
+        self.canvas.create_image(400, 300, anchor=tk.CENTER, image=self.background_image2)
         label = tk.Label(self, text="You Win!",
                          font=root.title_font)
         label.grid(row=0, column=0, sticky="nsew")
-
+        
         # styling buttons
         style = ttk.Style()
         style.configure("TButton", font=root.content_font)
