@@ -71,7 +71,7 @@ class GameScrambled():
             self.on_game_end_condition(False)
 
         # Win condition 50 pts to win
-        if self.get_cat_dist_from_mouse() >= 45:
+        if self.get_cat_dist_from_mouse() >= 40:
             self.on_game_end_condition(True, True)
 
     def on_game_end_condition(self, win: bool, epic_win: bool = False) -> int:
