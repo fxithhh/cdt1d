@@ -71,8 +71,9 @@ def initiate_game():
     #Mouse Speed
     mouse_point = 4
     #Input 1,2,3 should be button from tkinter
-    current_list = set_current_list(int(self.root.difficulty))
-    
+    current_list = set_current_list(int(input("1 or 2 or 3: ")))
+    #Shuffles order of words
+    random.shuffle(current_list)
     #list of random words
     rando_list = [randomize(word)for word in current_list]
     #Cat Points start
