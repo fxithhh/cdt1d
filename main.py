@@ -225,7 +225,7 @@ class EndLoseFrame(gc.GameFrame):
 
 if __name__ == '__main__':
     width, height = 800, 600
-    animation_fps = 30
+    animation_fps = 60
     frame_list = [MainMenuFrame, DifficultyFrame, GameFrame, EndWinFrame, EndLoseFrame]
     
     app = MainApp(width, height, animation_fps, frame_list)
