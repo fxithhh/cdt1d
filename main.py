@@ -6,7 +6,6 @@ from tkinter.constants import ANCHOR, CENTER, NW
 from wordlist import *
 
 
-
 class MainApp(tk.Tk):
     """Main app class.
 
@@ -21,6 +20,9 @@ class MainApp(tk.Tk):
 
         self.title_font = tkfont.Font(
             family='Papyrus', size=18, weight="bold", slant="italic")
+
+        self.content_font = tkfont.Font(
+            family='Comic Sans Ms', size=12, weight="bold", slant="italic")
 
         # the container is where we'll stack a bunch of frames
         # on top of each other, then the one we want visible
@@ -55,32 +57,33 @@ class MainMenuFrame(tk.Frame):
     Inherits:
         tk.Frame
     """
-   
+
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         self.background_image = tk.PhotoImage(file="giphy.gif")
-        
+
         C = tk.Canvas(self, height=600, width=800)
-        C.pack(fill = "both", expand = True)
-        C.create_image(400,300, anchor=CENTER,image=self.background_image)
-        button1 = tk.Button(self, text="Start",
-                            command=lambda: controller.show_frame("DifficultyFrame"))
+        C.pack(fill="both", expand=True)
+        C.create_image(400, 300, anchor=CENTER, image=self.background_image)
 
         # C.pack()
         # label = tk.Label(self, text="This is the start page", font=controller.title_font)
         # label.pack(side="top", fill="x", pady=10)
         style = ttk.Style()
+        style.configure("C.TButton", font=controller.content_font)
         style.map("C.TButton",
                   foreground=[('pressed', 'red'), ('active', 'blue')],
                   background=[('pressed', '!disabled', 'black'),
-                              ('active', 'white')]
+                              ('active', 'white')],
+               
                   )
         # create button
         startBtn = ttk.Button(self, text="Start", style="C.TButton",
                               command=lambda: controller.show_frame(
                                   "DifficultyFrame")
                               )
+
         startBtn.pack()
 
 
@@ -102,18 +105,18 @@ class DifficultyFrame(tk.Frame):
 
         # style easy medium hard buttons
         style = ttk.Style()
+        style.configure("TButton", font=controller.content_font)
         style.map("TButton",
                   foreground=[('pressed', 'red'), ('active', 'blue')],
                   background=[('pressed', '!disabled', 'black'),
                               ('active', 'white')]
                   )
 
-        
         def all_fn(val):
             controller.show_frame("GameFrame")
             controller.difficulty = val
             print(val)
-           
+
         # easy medium hard level buttons
         buttonEasy = ttk.Button(self, text="Easy", style="TButton",
                                 command=lambda: all_fn(1))
@@ -140,7 +143,6 @@ class GameFrame(DifficultyFrame, tk.Frame):
         button = tk.Button(self, text="End Game",
                            command=lambda: controller.show_frame("EndWinFrame"))
         button.pack()
-        
 
 
 class EndWinFrame(tk.Frame):
@@ -151,7 +153,16 @@ class EndWinFrame(tk.Frame):
         label = tk.Label(self, text="You Win!",
                          font=controller.title_font)
         label.pack(side="top", fill="x", pady=10)
-        button = tk.Button(self, text="Play Again",
+
+        # styling button
+        style = ttk.Style()
+        style.configure("TButton", font=controller.content_font)
+        style.map("TButton",
+                  foreground=[('pressed', 'red'), ('active', 'blue')],
+                  background=[('pressed', '!disabled', 'black'),
+                              ('active', 'white')]
+                  )
+        button = ttk.Button(self, text="Play Again", style="TButton",
                            command=lambda: controller.show_frame("MainMenuFrame"))
         button.pack()
 
@@ -164,7 +175,16 @@ class EndLoseFrame(tk.Frame):
         label = tk.Label(self, text="You ded lol",
                          font=controller.title_font)
         label.pack(side="top", fill="x", pady=10)
-        button = tk.Button(self, text="Try Again!",
+
+        # styling button
+        style = ttk.Style()
+        style.configure("TButton", font=controller.content_font)
+        style.map("TButton",
+                  foreground=[('pressed', 'red'), ('active', 'blue')],
+                  background=[('pressed', '!disabled', 'black'),
+                              ('active', 'white')]
+                  )
+        button = ttk.Button(self, text="Try Again!", style="TButton",
                            command=lambda: controller.show_frame("MainMenuFrame"))
         button.pack()
 
