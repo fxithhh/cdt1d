@@ -12,13 +12,13 @@ class GameScrambled():
     
     on_win_callback = None
     
-    def start_question(self, question_num):
-        if question_num >= len(self.rando_list):
+    def next_question(self):
+        self.question_index += 1
+        if self.question_index >= len(self.rando_list):
             self.on_game_end_condition(self.get_cat_dist_from_mouse() > 0)
             return
-            
+        
         self.qn_time_start = timer()
-        self.question_index = question_num
         print("Unscramble this:", self.get_current_scrambled_word())
     
     def check_answer(self, original_word, answer, skip: bool = False):
@@ -55,7 +55,7 @@ class GameScrambled():
         self.results.append((answer, self.get_current_original_word()))
         
         # Start next question
-        self.start_question(self.question_index + 1)
+        self.next_question()
     
     def check_cat_position(self):
         self.cat_points = self.get_game_time() // 3 # Every 3 Sec cat_point +1
@@ -138,10 +138,13 @@ class GameScrambled():
         
         # List of random words
         self.rando_list = [self.randomize(word) for word in self.current_list]
-        self.question_index = 0
+        self.question_index = -1 # needs to offset the initial addition
         
         # Begin game timer
         self.game_time_start = timer()
+        
+        # Begin the first question
+        self.next_question()
 
 if __name__ == "__main__":
     gamestart = GameScrambled()
