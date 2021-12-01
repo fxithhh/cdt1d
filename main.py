@@ -1,6 +1,7 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import Tk, ttk
 from tkinter import font as tkfont
+from tkinter.constants import ANCHOR, CENTER, NW
 # import list of words
 from wordlist import *
 
@@ -54,12 +55,21 @@ class MainMenuFrame(tk.Frame):
     Inherits:
         tk.Frame
     """
-
+   
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
+        self.background_image = tk.PhotoImage(file="giphy.gif")
+        
+        C = tk.Canvas(self, height=600, width=800)
+        C.pack(fill = "both", expand = True)
+        C.create_image(400,300, anchor=CENTER,image=self.background_image)
+        button1 = tk.Button(self, text="Start",
+                            command=lambda: controller.show_frame("DifficultyFrame"))
 
-        # Button styling
+        # C.pack()
+        # label = tk.Label(self, text="This is the start page", font=controller.title_font)
+        # label.pack(side="top", fill="x", pady=10)
         style = ttk.Style()
         style.map("C.TButton",
                   foreground=[('pressed', 'red'), ('active', 'blue')],
