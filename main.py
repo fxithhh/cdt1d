@@ -22,6 +22,7 @@ class MainApp(gc.GameRoot):
     def __init__(self, width, height, animation_fps, frames_list, *args, **kwargs):
         super().__init__(width, height, animation_fps, frames_list, *args, **kwargs)
         
+        self.content_font = tkFont.Font(family='Comic Sans Ms', size=18, weight="bold")
         
         self.load_frames()
         
