@@ -5,7 +5,7 @@ from tkinter import font as tkFont
 from timeit import default_timer as timer
 
 import gameclasses as gc
-import check_value as cv
+import gamescrambled as game
 
 
 class MainApp(gc.GameRoot):
@@ -109,7 +109,7 @@ class GameFrame(gc.GameFrame):
     """
     
     start_time: float = 0
-    scroll_speed: int = 200
+    scroll_speed: int = 500
     
     cat_sequence: list = [
         r'assets/Cat_frame01.png',
@@ -131,6 +131,13 @@ class GameFrame(gc.GameFrame):
         r'assets/Mouse_frame07.png',
         r'assets/Mouse_frame08.png',
     ]
+    
+    begin_anim_playing: bool = False
+    begin_anim_start: float = 0
+    end_anim_playing: bool = False
+    end_anim_start: float = 0
+    
+    game_instance = None
 
     def __init__(self, parent, root):
         super().__init__(parent, root)
@@ -149,6 +156,9 @@ class GameFrame(gc.GameFrame):
         self.animated_cat = gc.AnimatedSprite(root, 200, 500, self.canvas, self.cat_sequence, subsample=2)
         self.animated_mouse = gc.AnimatedSprite(root, 500, 550, self.canvas, self.mouse_sequence, subsample=4)
         
+        self.tree = gc.Sprite(100, 590, self.canvas, r'assets/tree.png', anchor=tk.S)
+        self.house = gc.Sprite(1200, 590, self.canvas, r'assets/house.png', anchor=tk.S)
+        
         # Score display
         self.score_label = tk.Label(self, text="Score: 0", font=root.content_font, background='#C3EEFF')
         self.score_label.grid(row=0, column=0, sticky='nw', padx=12, pady=12)
@@ -162,8 +172,20 @@ class GameFrame(gc.GameFrame):
         self.root.update_event.append(self.update)
     
     def on_enable(self) -> None:
-        print(cv.set_current_list(self.root.difficulty))
         self.start_time = timer()
+        self.begin_starting_animation()
+        self.game_instance = game.GameScrambled(self.root.difficulty)
+        self.game_instance.initiate_game()
+        
+    def begin_starting_animation(self) -> None:
+        self.begin_anim_playing = True
+        self.canvas.coords(self.tree.sprite, 200, 590)
+        self.begin_anim_start = timer()
+        
+    def begin_ending_animation(self) -> None:
+        self.end_anim_playing = True
+        self.canvas.coords(self.house.sprite, 1200, 590)
+        self.end_anim_start = timer()
         
     def update(self):
         if not self.enabled: return
@@ -172,6 +194,18 @@ class GameFrame(gc.GameFrame):
         
         self.canvas.coords(self.background1.sprite, int(-((c_time*self.scroll_speed + 1600) % 3200) + 1600), 0)
         self.canvas.coords(self.background2.sprite, int(-((c_time*self.scroll_speed) % 3200) + 1600), 0)
+        
+        if self.begin_anim_playing:
+            c_begin_time = timer() - self.begin_anim_start
+            new_x = 200 - c_begin_time*self.scroll_speed
+            self.canvas.coords(self.tree.sprite, new_x, 590)
+            self.begin_anim_playing = new_x > -300
+        
+        if self.end_anim_playing:
+            c_end_time = timer() - self.begin_anim_start
+            new_x = 1200 - c_end_time*self.scroll_speed
+            self.canvas.coords(self.house.sprite, new_x, 590)
+            self.end_anim_playing = new_x > 420
         
     def get_time(self) -> float:
         return timer() - self.start_time

@@ -7,14 +7,9 @@ class GameScrambled():
     def __init__(self,difficulty):
         self.difficulty = difficulty
 
-    def get_answer(self):
-        self.user_answer = input("[//] to pass. \nUnscrambled word: ")
-        return self.user_answer
-
-
-    def check_answer(self, scrambled_word, original_word):
+    def check_answer(self, original_word, answer):
         start_time = time.time()
-        useranswer = self.get_answer()
+        useranswer = answer
         end_time = time.time()
         self.time_diff_sec = end_time - start_time
         #Take too long to guess
@@ -75,7 +70,6 @@ class GameScrambled():
 
     def get_cat_dist_from_mouse(self):
         return self.cat_dist_from_mouse
-
 
     #TIME TAKEN TO ANSWER EACH QUESTION
     def get_time_taken_answer(self):
