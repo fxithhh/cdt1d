@@ -157,7 +157,9 @@ class GameRoot(GameObject, tk.Tk):
         tk.Tk.__init__(self, *args, **kwargs)
 
         # Fonts used
-        self.title_font = tkfont.Font(family='Papyrus', size=18, weight="bold")
+        self.title_font = tkfont.Font(family='Comic Sans Ms', size=18, weight="bold")
+        self.content_font = tkfont.Font(family='Comic Sans Ms', size=18, weight="bold")
+
 
         self.width, self.height = width, height
         self.animation_fps = animation_fps
