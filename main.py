@@ -3,7 +3,6 @@ from tkinter import ttk
 from tkinter import font as tkFont
 
 from timeit import default_timer as timer
-from tkinter.constants import CURRENT
 
 import gameclasses as gc
 import check_value as cv
@@ -142,7 +141,7 @@ class GameFrame(gc.GameFrame):
         self.label.place(x=400, y=200, anchor='s')
         
         self.ans_canvas = tk.Canvas(self)
-        self.ans_canvas.place(x=400, y=220, width=800, height=44, anchor='n')
+        self.ans_canvas.place(x=400, y=220, width=800, height=88, anchor='n')
         
         self.background1 = gc.Sprite(0, 0, self.canvas, r'assets/Background_Long.png', anchor=tk.NW)
         self.background2 = gc.Sprite(1600, 0, self.canvas, r'assets/Background_Long.png', anchor=tk.NW)
@@ -150,9 +149,13 @@ class GameFrame(gc.GameFrame):
         self.animated_cat = gc.AnimatedSprite(root, 200, 500, self.canvas, self.cat_sequence, subsample=2)
         self.animated_mouse = gc.AnimatedSprite(root, 500, 550, self.canvas, self.mouse_sequence, subsample=4)
         
+        # Score display
+        self.score_label = tk.Label(self, text="Score: 0", font=root.content_font, background='#C3EEFF')
+        self.score_label.grid(row=0, column=0, sticky='nw', padx=12, pady=12)
+        
         # Debug button (goes to end screen)
-        button = tk.Button(self, text="End Game", command=lambda: root.show_frame(EndWinFrame), foreground = "red", background="#c3eeff", font="Papyrus")
-        button.grid(row=2, column=2, sticky='se')
+        button = tk.Button(self, text="End Game", command=lambda: root.show_frame(EndWinFrame), foreground = "red", background="#C3EEFF", font="Papyrus")
+        button.grid(row=0, column=2, sticky='se')
         
         self.enabled = False
 
@@ -165,10 +168,13 @@ class GameFrame(gc.GameFrame):
     def update(self):
         if not self.enabled: return
     
-        c_time = timer() - self.start_time
+        c_time = self.get_time()
         
         self.canvas.coords(self.background1.sprite, int(-((c_time*self.scroll_speed + 1600) % 3200) + 1600), 0)
         self.canvas.coords(self.background2.sprite, int(-((c_time*self.scroll_speed) % 3200) + 1600), 0)
+        
+    def get_time(self) -> float:
+        return timer() - self.start_time
 
 class EndWinFrame(gc.GameFrame):
     """Ending page on win.
