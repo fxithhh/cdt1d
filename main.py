@@ -169,6 +169,7 @@ class GameFrame(gc.GameFrame):
         
         self.game_instance = game.GameScrambled()
         self.game_instance.on_win_callback = self.on_win
+        self.game_instance.on_question_callback = self.on_question
         
         self.enabled = False
 
@@ -194,7 +195,7 @@ class GameFrame(gc.GameFrame):
         self.end_anim_start = timer()
         
     def on_question(self, scrambled_word: str) -> None:
-        print(f'New word: {scrambled_word}')
+        self.label.config(text=f'{scrambled_word}')
         
     def on_win(self, win_type: int) -> None:
         print(f'Win type: {win_type}')
@@ -214,7 +215,7 @@ class GameFrame(gc.GameFrame):
         self.canvas.coords(self.animated_cat.sprite, int(500 - (500/40)*self.game_instance.get_cat_dist_from_mouse()), 500)
         
         self.score_label.config(text=f'Score: {self.game_instance.get_mouse_points()}')
-        self.label.config(text=f'{self.game_instance.get_current_scrambled_word()}')
+        
         
         if self.begin_anim_playing:
             c_begin_time = timer() - self.begin_anim_start
