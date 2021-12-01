@@ -175,7 +175,7 @@ class GameFrame(gc.GameFrame):
         self.score_label.grid(row=0, column=0, sticky='nw', padx=12, pady=12)
         
         # Debug button (goes to end screen)
-        button = tk.Button(self, text="End Game", command=lambda: root.show_frame(EndWinFrame), foreground = "red", background="#C3EEFF", font="Papyrus")
+        button = tk.Button(self, text="End Game", command=lambda: root.show_frame(EndLoseFrame), foreground = "red", background="#C3EEFF", font="Papyrus")
         button.grid(row=0, column=2, sticky='se')
         
         self.game_instance = game.GameScrambled()
@@ -194,9 +194,8 @@ class GameFrame(gc.GameFrame):
         self.animated_cat.enabled = True
         self.animated_mouse.enabled = True
         
-        self.game_instance.initiate_game(self.root.difficulty)
-        self.game_instance.mouse_point = 40
-        
+        self.game_instance.initiate_game(self.root.difficulty, -30)
+        self.game_instance.get_current_scrambled_word()
         
     def begin_starting_animation(self) -> None:
         self.begin_anim_playing = True
@@ -217,6 +216,11 @@ class GameFrame(gc.GameFrame):
         self.animated_cat.enabled = False
         self.animated_mouse.enabled = False
         
+        if win_type == 0:
+            self.root.show_frame(EndLoseFrame)
+        else:
+            self.root.show_frame(EndWinFrame)
+        
     def update(self):
         if not self.enabled: return
     
@@ -226,7 +230,7 @@ class GameFrame(gc.GameFrame):
         
         self.canvas.coords(self.background1.sprite, int(-((c_time*self.scroll_speed + 1600) % 3200) + 1600), 0)
         self.canvas.coords(self.background2.sprite, int(-((c_time*self.scroll_speed) % 3200) + 1600), 0)
-        self.canvas.coords(self.animated_cat.sprite, int(500 - (500/40)*self.game_instance.get_cat_dist_from_mouse()), 500)
+        self.canvas.coords(self.animated_cat.sprite, int(420 - (420/40)*self.game_instance.get_cat_dist_from_mouse()), 500)
         
         self.score_label.config(text=f'Score: {self.game_instance.get_mouse_points()}')
         
