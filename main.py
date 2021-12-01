@@ -155,7 +155,7 @@ class GameFrame(gc.GameFrame):
         self.entry.place(x=400, y=244, anchor="n")
         def get_value(event):
             value = self.entry.get() 
-            self.game_instance.check_answer(answer = value)
+            self.game_instance.check_answer(answer = value, skip=value=="")
             self.entry.delete(0,'end')
         self.entry.bind("<Return>", get_value)
 
