@@ -5,7 +5,7 @@ from tkinter import font as tkFont
 from timeit import default_timer as timer
 
 import gameclasses as gc
-import gamescrambled as game
+import GameScrambled as game
 
 
 class MainApp(gc.GameRoot):
