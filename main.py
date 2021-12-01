@@ -37,23 +37,22 @@ class MainMenuFrame(GC.GameFrame):
         super().__init__(parent, root)
         
         
-        self.background_image = tk.PhotoImage(file="./assets/Intro_frame.png")
+        self.background_image = tk.PhotoImage(file="./assets/home_bg.png")
         self.canvas.create_image(400, 300, anchor=tk.CENTER, image=self.background_image)
 
         # self.canvas.pack()
         # label = tk.Label(self, text="This is the start page", font=root.title_font)
         # label.pack(side="top", fill="x", pady=10)
         style = ttk.Style()
-        style.configure("C.TButton", font=root.content_font)
+        style.configure("C.TButton", font=root.content_font, background = '#ff7733', foreground = '#cc0000')
         style.map("C.TButton",
-                  foreground=[('pressed', 'red'), ('active', 'blue')],
-                  background=[('pressed', '!disabled', 'black'),
-                              ('active', 'white')])
+                  foreground=[('active', '#006622')],
+                  background=[('active', '#00cc44')])
         
         # create button
-        startBtn = ttk.Button(root.container, text="Start", style="C.TButton",
+        startBtn = ttk.Button(self, text="Start", style="C.TButton",
                               command=lambda: root.show_frame(DifficultyFrame))
-        startBtn.grid(row=1, column=0)
+        startBtn.grid(row=0, column=0, pady=(80, 0))
 
 
 class DifficultyFrame(GC.GameFrame):

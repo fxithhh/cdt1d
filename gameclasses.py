@@ -150,7 +150,7 @@ class GameRoot(GameObject, tk.Tk):
         # fonts used
         self.title_font = tkfont.Font(family='Papyrus', size=18, weight="bold")
         self.content_font = tkfont.Font(
-            family='Cosmic San Ms', size=12, weight = "bold", slant="italic")
+            family='Cosmic San Ms', size=16, weight = "bold", slant="italic")
 
         self.width, self.height = width, height
         self.frame_delay = frame_delay
