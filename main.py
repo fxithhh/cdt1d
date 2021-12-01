@@ -26,6 +26,11 @@ class MainApp(GC.GameRoot):
         self.title_font = tkFont.Font(
             family='Papyrus', size=18, weight="bold", slant="italic")
         
+        self.content_font = tkFont.Font(
+            family='Comic Sans Ms', size=18, weight="bold", slant="italic")
+        
+        self.load_frames()
+        
         self.show_frame(MainMenuFrame)
 
 class MainMenuFrame(GC.GameFrame):
@@ -46,10 +51,10 @@ class MainMenuFrame(GC.GameFrame):
                             command=lambda: root.show_frame(DifficultyFrame))
 
         # self.canvas.pack()
-        # label = tk.Label(self, text="This is the start page", font=controller.title_font)
+        # label = tk.Label(self, text="This is the start page", font=root.title_font)
         # label.pack(side="top", fill="x", pady=10)
         style = ttk.Style()
-        style.configure("C.TButton", font=controller.content_font)
+        style.configure("C.TButton", font=root.content_font)
         style.map("C.TButton",
                   foreground=[('pressed', 'red'), ('active', 'blue')],
                   background=[('pressed', '!disabled', 'black'),
@@ -78,7 +83,7 @@ class DifficultyFrame(GC.GameFrame):
 
         # style easy medium hard buttons
         style = ttk.Style()
-        style.configure("TButton", font=controller.content_font)
+        style.configure("TButton", font=root.content_font)
         style.map("TButton",
                   foreground=[('pressed', 'red'), ('active', 'blue')],
                   background=[('pressed', '!disabled', 'black'),

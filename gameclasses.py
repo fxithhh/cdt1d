@@ -162,23 +162,6 @@ class GameRoot(GameObject, tk.Tk):
         self.container.pack(side="top", fill="both", expand=True)
         self.container.grid_rowconfigure(0, weight=1)
         self.container.grid_columnconfigure(0, weight=1)
-
-        # Put all of the pages in the same location;
-        # the one on the top of the stacking order
-        # will be the one that is visible.
-        self.frames = {}
-        self.game_children = []
-        for widget_class in self.f_list:
-            page_name = widget_class.__name__
-            widget = widget_class(parent=self.container, root=self)
-            self.frames[page_name] = widget
-            
-            # Add the frames to the GameObject index
-            self.game_children.append(widget)
-            widget.grid(row=0, column=0, sticky="nsew")
-
-        # Show the default frame
-        self.show_frame(AnimationFrame)
         
         # Run update function
         self.update()
@@ -203,6 +186,21 @@ class GameRoot(GameObject, tk.Tk):
             if issubclass(type(self.current_frame), GameObject):
                 self.current_frame.enabled = True
                 self.current_frame.on_enable()
+    
+    def load_frames(self):
+        # Put all of the pages in the same location;
+        # the one on the top of the stacking order
+        # will be the one that is visible.
+        self.frames = {}
+        self.game_children = []
+        for widget_class in self.f_list:
+            page_name = widget_class.__name__
+            widget = widget_class(parent=self.container, root=self)
+            self.frames[page_name] = widget
+                
+            # Add the frames to the GameObject index
+            self.game_children.append(widget)
+            widget.grid(row=0, column=0, sticky="nsew")
             
     def update(self):
         super().update()
@@ -215,4 +213,6 @@ if __name__ == '__main__':
     frame_list = [AnimationFrame,]
     
     app = GameRoot(width, height, frame_delay, frame_list)
+    app.load_frames()
+    app.show_frame(AnimationFrame)
     app.mainloop()
