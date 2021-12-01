@@ -7,7 +7,7 @@
 #   Unscramble the words as fast as possible to gain points
 #   The word theme is Animals! 
 #   Every point moves the Mouse forward
-#   The Cat is in constant motion of chasing you
+#   The Cat is chasing you
 #   The faster you unscramble the words, the faster the Mouse goes
 #   If you make a mistake, you lose 2 points and the Mouse gets stunned for 2 seconds!
 #   If the Cat catches you, you lose!

@@ -130,11 +130,12 @@ class EndWinFrame(GC.GameFrame):
 
     def __init__(self, parent, root):
         super().__init__(parent, root)
-        
+        self.background_image2 = tk.PhotoImage(file=r"assets/8x6.png")
+        self.canvas.create_image(400, 300, anchor=tk.CENTER, image=self.background_image2)
         label = tk.Label(self, text="You Win!",
                          font=root.title_font)
         label.grid(row=0, column=0, sticky="nsew")
-
+        
         # styling buttons
         style = ttk.Style()
         style.configure("TButton", font=root.content_font)
