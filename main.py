@@ -179,6 +179,10 @@ class GameFrame(gc.GameFrame):
         self.start_time = timer()
         self.begin_starting_animation()
         print(self.root.difficulty)
+        
+        self.animated_cat.enabled = True
+        self.animated_mouse.enabled = True
+        
         self.game_instance.initiate_game(self.root.difficulty)
         self.game_instance.mouse_point = 40
         self.game_instance.get_current_scrambled_word()
