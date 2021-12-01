@@ -69,8 +69,8 @@ class DifficultyFrame(gc.GameFrame):
         # Title for difficulty level
         self.background = gc.Sprite(0, 0, self.canvas, r'assets/Difficulty_page.png', anchor=tk.NW)
         label = tk.Label(self, text="Choose a Difficulty Level!",
-                         font=root.title_font, foreground="Black", background = "#c3eeff")
-        label.grid(row=0, column=0, pady=(25, 25))
+                         font=root.title_font, foreground="Black", background = "#c3eeff", height=2)
+        label.grid(row=0, column=0, pady=(40, 0))
 
         # style easy medium hard buttons
         style = ttk.Style()
@@ -95,7 +95,7 @@ class DifficultyFrame(gc.GameFrame):
         buttonHard = ttk.Button(self, text="Hard", style="TButton",
                                 command=lambda: all_fn(3))
 
-        buttonEasy.grid(row=1, column=0, pady=(25,25))
+        buttonEasy.grid(row=1, column=0, pady=(60,25))
         buttonMed.grid(row=2, column=0, pady=(25,25))
         buttonHard.grid(row=3, column=0, pady=(25,25))
 
@@ -121,7 +121,7 @@ class GameFrame(gc.GameFrame):
         self.background = gc.Sprite(0, 0, self.canvas, r'assets/background.png', anchor=tk.NW)
         
         # Debug button (goes to end screen)
-        button = tk.Button(self, text="End Game", command=lambda: root.show_frame(EndWinFrame))
+        button = tk.Button(self, text="End Game", command=lambda: root.show_frame(EndWinFrame), foreground = "red", background="#c3eeff", font="Papyrus")
         button.grid(row=2, column=2, sticky='se')
 
         self.root.update_event.append(self.update)
