@@ -24,6 +24,11 @@ class MainApp(GC.GameRoot):
     def __init__(self, width, height, frame_delay, frames_list, *args, **kwargs):
         super().__init__(width, height, frame_delay, frames_list, *args, **kwargs)
         
+        self.content_font = tkFont.Font(
+            family='Comic Sans Ms', size=18, weight="bold", slant="italic")
+        
+        self.load_frames()
+        
         self.show_frame(MainMenuFrame)
 
 class MainMenuFrame(GC.GameFrame):
@@ -41,7 +46,7 @@ class MainMenuFrame(GC.GameFrame):
         self.canvas.create_image(400, 300, anchor=tk.CENTER, image=self.background_image)
 
         # self.canvas.pack()
-        # label = tk.Label(self, text="This is the start page", font=controller.title_font)
+        # label = tk.Label(self, text="This is the start page", font=root.title_font)
         # label.pack(side="top", fill="x", pady=10)
         style = ttk.Style()
         style.configure("C.TButton", font=root.content_font)
