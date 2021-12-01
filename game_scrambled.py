@@ -11,6 +11,7 @@ class GameScrambled():
     game_time_start: float = 0.0
     
     on_win_callback = None
+    on_question_callback = None
     
     def next_question(self):
         self.question_index += 1
@@ -20,6 +21,7 @@ class GameScrambled():
         
         self.qn_time_start = timer()
         print("Unscramble this:", self.get_current_scrambled_word())
+        self.on_question_callback(self.get_current_scrambled_word())
     
     def check_answer(self, original_word, answer, skip: bool = False):
         c_time = self.get_question_time()

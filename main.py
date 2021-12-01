@@ -191,6 +191,9 @@ class GameFrame(gc.GameFrame):
         self.canvas.coords(self.house.sprite, 1200, 590)
         self.end_anim_start = timer()
         
+    def on_question(self, scrambled_word: str) -> None:
+        print(f'New word: {scrambled_word}')
+        
     def on_win(self, win_type: int) -> None:
         print(f'Win type: {win_type}')
         self.enabled = False
