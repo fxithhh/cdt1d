@@ -214,6 +214,8 @@ class GameFrame(gc.GameFrame):
         self.enabled = False
         self.animated_cat.enabled = False
         self.animated_mouse.enabled = False
+        if win_type == 0:
+            self.root.show_frame(EndLoseFrame)
         
     def update(self):
         if not self.enabled: return
@@ -278,7 +280,7 @@ class EndLoseFrame(gc.GameFrame):
 
     def __init__(self, parent, root):
         super().__init__(parent, root)
-        self.background_image3 = tk.PhotoImage(file="./assets/house.png")
+        self.background_image3 = tk.PhotoImage(file="./assets/You_Lose.png")
         label = tk.Label(self, text="You ded lol",
                          font=root.title_font,
                          image = self.background_image3,
@@ -292,8 +294,9 @@ class EndLoseFrame(gc.GameFrame):
                   foreground=[('pressed', 'red'), ('active', 'blue')],
                   background=[('pressed', '!disabled', 'black'),
                               ('active', 'white')])
-        button = ttk.Button(self, text="Try Again!", command=lambda: root.show_frame(MainMenuFrame))
-        button.grid(row=1, column=0)
+        button = ttk.Button(self, text="Play Again",
+                           command=lambda: root.show_frame(MainMenuFrame))
+        button.grid(row=0, column=0)
 
 if __name__ == '__main__':
     width, height = 800, 600
