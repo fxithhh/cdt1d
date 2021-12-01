@@ -4,7 +4,7 @@ from tkinter import ttk
 
 class MainApp(tk.Tk):
     """Main app class.
-    style = ttk.Style()
+   
     Inherits:
         tk.Tk
     """
