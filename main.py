@@ -1,13 +1,14 @@
 import tkinter as tk
 from tkinter import font as tkfont
+from tkinter import ttk
 
 class MainApp(tk.Tk):
     """Main app class.
-    
+    style = ttk.Style()
     Inherits:
         tk.Tk
     """
-
+    
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
 
@@ -51,11 +52,17 @@ class MainMenuFrame(tk.Frame):
         self.controller = controller
         label = tk.Label(self, text="This is the start page", font=controller.title_font)
         label.pack(side="top", fill="x", pady=10)
-
-        button1 = tk.Button(self, text="Go to Page One",
-                            command=lambda: controller.show_frame("DifficultyFrame"))
-        button2 = tk.Button(self, text="Go to Page Two",
+        style = ttk.Style()
+        style.map("C.TButton",
+        foreground=[('pressed', 'red'), ('active', 'blue')],
+        background=[('pressed', '!disabled', 'black'), ('active', 'white')]
+        )
+        button1 = ttk.Button(self, text="Go to Page One", style="C.TButton",
+                            command=lambda: controller.show_frame("DifficultyFrame")
+                            )
+        button2 = ttk.Button(self, text="Go to Page Two", style="C.TButton",    
                             command=lambda: controller.show_frame("GameFrame"))
+                            
         button1.pack()
         button2.pack()
         
@@ -71,7 +78,7 @@ class DifficultyFrame(tk.Frame):
         self.controller = controller
         label = tk.Label(self, text="This is page 1", font=controller.title_font)
         label.pack(side="top", fill="x", pady=10)
-        button = tk.Button(self, text="Go to the start page",
+        button = ttk.Button(self, text="Go to the start page",
                            command=lambda: controller.show_frame("MainMenuFrame"))
         button.pack()
 
