@@ -1,6 +1,7 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import Tk, ttk
 from tkinter import font as tkfont
+from tkinter.constants import ANCHOR, CENTER, NW
 
 
 class MainApp(tk.Tk):
@@ -49,16 +50,15 @@ class MainMenuFrame(tk.Frame):
     Inherits:
         tk.Frame
     """
-
+   
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
-        # waiting for png files
-        # C = tk.Canvas(self, bg='blue', height=500, width=500)
-        # background_image = tk.PhotoImage(file='./assets/Cat_frame01.png')
-        # background_label = tk.Label(self, image=background_image)
-        # background_label.place(x=0, y=0, relwidth=1, relheight=1)
-
+        self.background_image = tk.PhotoImage(file="giphy.gif")
+        
+        C = tk.Canvas(self, height=600, width=800)
+        C.pack(fill = "both", expand = True)
+        C.create_image(400,300, anchor=CENTER,image=self.background_image)
         button1 = tk.Button(self, text="Start",
                             command=lambda: controller.show_frame("DifficultyFrame"))
 
