@@ -3,7 +3,7 @@ from tkinter import ttk
 from tkinter import font as tkFont
 
 from timeit import default_timer as timer
-from tkinter.constants import CURRENT
+from tkinter.constants import CURRENT, X
 
 import gameclasses as gc
 import check_value as cv
@@ -142,7 +142,36 @@ class GameFrame(gc.GameFrame):
         self.label.place(x=400, y=200, anchor='s')
         
         self.ans_canvas = tk.Canvas(self)
-        self.ans_canvas.place(x=400, y=220, width=800, height=44, anchor='n')
+        self.ans_canvas.place(x=400, y=220, width=800, height=44,anchor='n')
+        
+
+        # def printValue(event=None):
+        #    get_value = entry.get()
+        #    print('ayyo', get_value)
+
+        # entry = tk.Entry(self, fg="yellow", bg="blue", width=10)
+       
+        # entry.grid(row = 0, column = 0)
+
+        # entry.bind('<Return>', printValue())
+
+        #passw_var=tk.StringVar()
+        #password=passw_var.get()
+        #passw_var.set("")
+        #passw_entry=tk.Entry(self, textvariable = passw_var)
+        #passw_entry.grid(row=0,column=0)
+        
+        # print('hello', password)
+        
+        #ans_input = entry.bind('<Key>', lambda event: entry.get())
+        #print(cv.get_answer(ans_input))
+
+         # Place input
+
+        
+
+        #self.label = tk.Label(self, text="some scrambled word", font=root.content_font)
+        #self.label.place(x=400, y=220, height = 44, anchor='n')
         
         self.background1 = gc.Sprite(0, 0, self.canvas, r'assets/Background_Long.png', anchor=tk.NW)
         self.background2 = gc.Sprite(1600, 0, self.canvas, r'assets/Background_Long.png', anchor=tk.NW)
@@ -160,6 +189,8 @@ class GameFrame(gc.GameFrame):
     
     def on_enable(self) -> None:
         print(cv.set_current_list(self.root.difficulty))
+        test = cv.set_current_list(self.root.difficulty)
+        # print(cv.initiate_game(test))
         self.start_time = timer()
         
     def update(self):
@@ -179,10 +210,8 @@ class EndWinFrame(gc.GameFrame):
 
     def __init__(self, parent, root):
         super().__init__(parent, root)
-        self.background_image2 = tk.PhotoImage(file="./assets/8x6.png")
-        label = tk.Label(self, text="You Win!",
-                         font=root.title_font,
-                         image=self.background_image2,
+        self.background_image2 = tk.PhotoImage(file="./assets/You Win.png")
+        label = tk.Label(self, image=self.background_image2,
                          compound = "center")
         label.grid(row=0, column=0)
         
@@ -195,7 +224,7 @@ class EndWinFrame(gc.GameFrame):
                               ('active', 'white')])
         button = ttk.Button(self, text="Play Again",
                            command=lambda: root.show_frame(MainMenuFrame))
-        button.grid(row=0, column=0, pady=(100,0))
+        button.grid(row=0, column=0)
 
 class EndLoseFrame(gc.GameFrame):
     """Ending page on lose.

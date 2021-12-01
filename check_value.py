@@ -1,9 +1,13 @@
 import time
 import random
+from tkinter import Entry
+from gameclasses import GameFrame
+import main as mn
 from wordlist import *
 #Request user input
 def get_answer():
     user_answer = input("[//] to pass. \nUnscrambled word: ")
+    # user_answer = mn.GameFrame
     return user_answer
 
 
@@ -67,11 +71,11 @@ def randomize(word):
     return ''.join(letters)
 
 
-def initiate_game():
+def initiate_game(current_list):
     #Mouse Speed
     mouse_point = 4
     #Input 1,2,3 should be button from tkinter
-    current_list = set_current_list(int(input("1 or 2 or 3: ")))
+    # current_list = set_current_list(int(input("1 or 2 or 3: "))) 
     #Shuffles order of words
     random.shuffle(current_list)
     #list of random words
@@ -112,6 +116,7 @@ def initiate_game():
         print("You've turned into Ratatoullie")
     else:
         print("Barely got by")
+   
 
 if __name__ == "__main__":
     initiate_game()
