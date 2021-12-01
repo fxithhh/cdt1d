@@ -51,10 +51,10 @@ class Sprite(GameObject):
             y (int): y position of the sprite.
             image_file (str): File path the image asset.
         """
-        self.sprite = tk.PhotoImage(file=image_file)
+        self.sprite_image = tk.PhotoImage(file=image_file)
         if self.subsample:
-            self.sprite = self.sprite.subsample(self.subsample, self.subsample)
-        self.canvas.create_image(x, y, image=self.sprite, anchor=self.anchor)
+            self.sprite_image = self.sprite_image.subsample(self.subsample, self.subsample)
+        self.sprite = self.canvas.create_image(x, y, image=self.sprite_image, anchor=self.anchor)
 
 class AnimatedSprite(Sprite):
     """Animated sprite class.
@@ -75,14 +75,16 @@ class AnimatedSprite(Sprite):
     current_seq_index: int = 0
     
     
-    def __init__(self, root, x, y, canvas, image_sequence=image_sequence, anchor=tk.CENTER):
-        super().__init__(x, y, canvas, anchor=anchor)
+    def __init__(self, root, x, y, canvas, image_sequence=image_sequence, subsample = None, anchor=tk.CENTER):
+        super().__init__(x, y, canvas, subsample=subsample, anchor=anchor)
         self.root = root
         
         self.image_sequence = image_sequence
         self.root.update_event.append(self.update)
     
     def update(self):
+        if not self.enabled: return
+        
         # Rollover animation index if reached the end
         if self.current_seq_index == len(self.image_sequence): self.current_seq_index = 0
         

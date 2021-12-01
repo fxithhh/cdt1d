@@ -2,9 +2,11 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import font as tkFont
 
+from timeit import default_timer as timer
+from tkinter.constants import CURRENT
+
 import gameclasses as gc
 import check_value as cv
-import wordlist
 
 
 class MainApp(gc.GameRoot):
@@ -106,6 +108,30 @@ class GameFrame(gc.GameFrame):
     Inherits:
         gc.GameFrame
     """
+    
+    start_time: float = 0
+    scroll_speed: int = 200
+    
+    cat_sequence: list = [
+        r'assets/Cat_frame01.png',
+        r'assets/Cat_frame02.png',
+        r'assets/Cat_frame03.png',
+        r'assets/Cat_frame04.png',
+        r'assets/Cat_frame05.png',
+        r'assets/Cat_frame06.png',
+        r'assets/Cat_frame07.png',
+        r'assets/Cat_frame08.png',
+    ]
+    mouse_sequence = [
+        r'assets/Mouse_frame01.png',
+        r'assets/Mouse_frame02.png',
+        r'assets/Mouse_frame03.png',
+        r'assets/Mouse_frame04.png',
+        r'assets/Mouse_frame05.png',
+        r'assets/Mouse_frame06.png',
+        r'assets/Mouse_frame07.png',
+        r'assets/Mouse_frame08.png',
+    ]
 
     def __init__(self, parent, root):
         super().__init__(parent, root)
@@ -118,19 +144,31 @@ class GameFrame(gc.GameFrame):
         self.ans_canvas = tk.Canvas(self)
         self.ans_canvas.place(x=400, y=220, width=800, height=44, anchor='n')
         
-        self.background = gc.Sprite(0, 0, self.canvas, r'assets/background.png', anchor=tk.NW)
+        self.background1 = gc.Sprite(0, 0, self.canvas, r'assets/Background_Long.png', anchor=tk.NW)
+        self.background2 = gc.Sprite(1600, 0, self.canvas, r'assets/Background_Long.png', anchor=tk.NW)
+        
+        self.animated_cat = gc.AnimatedSprite(root, 200, 500, self.canvas, self.cat_sequence, subsample=2)
+        self.animated_mouse = gc.AnimatedSprite(root, 500, 550, self.canvas, self.mouse_sequence, subsample=4)
         
         # Debug button (goes to end screen)
         button = tk.Button(self, text="End Game", command=lambda: root.show_frame(EndWinFrame), foreground = "red", background="#c3eeff", font="Papyrus")
         button.grid(row=2, column=2, sticky='se')
+        
+        self.enabled = False
 
         self.root.update_event.append(self.update)
     
     def on_enable(self) -> None:
         print(cv.set_current_list(self.root.difficulty))
+        self.start_time = timer()
         
     def update(self):
-        self.background.x += 3
+        if not self.enabled: return
+    
+        c_time = timer() - self.start_time
+        
+        self.canvas.coords(self.background1.sprite, int(-((c_time*self.scroll_speed + 1600) % 3200) + 1600), 0)
+        self.canvas.coords(self.background2.sprite, int(-((c_time*self.scroll_speed) % 3200) + 1600), 0)
 
 class EndWinFrame(gc.GameFrame):
     """Ending page on win.
@@ -187,7 +225,7 @@ class EndLoseFrame(gc.GameFrame):
 
 if __name__ == '__main__':
     width, height = 800, 600
-    animation_fps = 30
+    animation_fps = 60
     frame_list = [MainMenuFrame, DifficultyFrame, GameFrame, EndWinFrame, EndLoseFrame]
     
     app = MainApp(width, height, animation_fps, frame_list)
