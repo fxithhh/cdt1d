@@ -10,7 +10,6 @@ class MainApp(tk.Tk):
     Inherits:
         tk.Tk
     """
-
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
 
@@ -65,6 +64,19 @@ class MainMenuFrame(tk.Frame):
         # button2 = tk.Button(self, text="Go to Page Two",
         #                     command=lambda: controller.show_frame("GameFrame"))
         C.pack()
+        label = tk.Label(self, text="This is the start page", font=controller.title_font)
+        label.pack(side="top", fill="x", pady=10)
+        style = ttk.Style()
+        style.map("C.TButton",
+        foreground=[('pressed', 'red'), ('active', 'blue')],
+        background=[('pressed', '!disabled', 'black'), ('active', 'white')]
+        )
+        button1 = ttk.Button(self, text="Go to Page One", style="C.TButton",
+                            command=lambda: controller.show_frame("DifficultyFrame")
+                            )
+        # button2 = ttk.Button(self, text="Go to Page Two", style="C.TButton",    
+        #                     command=lambda: controller.show_frame("GameFrame"))
+                            
         button1.pack()
         # button2.pack()
 
