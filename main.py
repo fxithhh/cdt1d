@@ -1,19 +1,21 @@
 import tkinter as tk
 from tkinter import ttk
 
+
 def main() -> None:
     """Main function. Runs TKinter window and everything else.
     """
-    
+
     window = tk.Tk()
     initialize_window(window, "Dont touch me", icon='./icon.ico')
-    
+
     # Place a label on the root window
     for _ in range(100):
         ttk.Label(window, text="Peepeepoopoo!").pack()
-    
+
     # Keep the window open until it is closed
     window.mainloop()
+
 
 def initialize_window(window: tk.Tk, title: str, window_width: int = 300, window_height: int = 200, icon: str = None) -> None:
     """Initializes the program window.
@@ -41,13 +43,16 @@ def initialize_window(window: tk.Tk, title: str, window_width: int = 300, window
     if icon:
         window.iconbitmap(icon)
 
+
 def show_typing(window: tk.Tk, label: tk.Label, text: str) -> None:
     label.config(text=text)
     label.pack()
 
+
 def main() -> None:
     """Main function. Runs TKinter window and everything else.
     """
+
 
     window = tk.Tk()
     initialize_window(window, "Dont touch me", icon='./icon.ico')
@@ -56,13 +61,14 @@ def main() -> None:
     message = tk.Label(window, text="Peepeepoopoo!")
     message.pack()
 
+    # styling button
+    style = ttk.Style()
+    style.map("testBtn", foreground=[('pressed', 'red'), ('active', 'blue')],
+                    background=[('pressed', '!disabled', 'black'), ('active', 'white')])
     # Place button
     button = tk.Button(
         text="Click me!",
-        width=5,
-        height=3,
-        bg="blue",
-        fg="yellow",
+        style= "testBtn"
     )
     button.pack()
 
@@ -74,9 +80,10 @@ def main() -> None:
     label2 = tk.Label(window)
 
     entry.bind('<Key>', lambda event: show_typing(window, label2, entry.get()))
-  
+
     # Keep the window open until it is closed
     window.mainloop()
+
 
 if __name__ == '__main__':
     main()
