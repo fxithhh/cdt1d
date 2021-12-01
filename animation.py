@@ -2,12 +2,26 @@ import tkinter as tk
 from tkinter import font as tkfont
 
 
-class AnimationTest(tk.Frame):
+class AnimationFrame(tk.Frame):
     """Main menu page.
 
     Inherits:
         tk.Frame
     """
+    
+    delay: int = 1000//30
+    image_sequence: str = [
+        r'assets/Cat_frame01.png',
+        r'assets/Cat_frame02.png',
+        r'assets/Cat_frame03.png',
+        r'assets/Cat_frame04.png',
+        r'assets/Cat_frame05.png',
+        r'assets/Cat_frame06.png',
+        r'assets/Cat_frame07.png',
+        r'assets/Cat_frame08.png',
+    ]
+    current_seq_index: int = 0
+    paused: bool = False
     
     def __init__(self, parent, root):
         tk.Frame.__init__(self, parent)
@@ -17,16 +31,32 @@ class AnimationTest(tk.Frame):
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
         
-        canvas = tk.Canvas(self, width=300, height=200, background='white')
-        canvas.grid(row=0, column=0, sticky="nsew")
-        self.show_image(canvas)
+        self.canvas = tk.Canvas(self, background='white')
+        self.canvas.grid(row=0, column=0, sticky="nsew")
+        
+        self.update()
     
-    def show_image(self, canvas):
-        self.cat_img = tk.PhotoImage(file=r'assets/Cat_frame01.png')
+    def show_image(self, x: int, y: int, image_file: str):
+        self.cat_img = tk.PhotoImage(file=image_file)
         self.cat_img = self.cat_img.subsample(2, 2)
-        canvas.create_image(150, 100, image=self.cat_img, anchor=tk.CENTER)
+        self.canvas.create_image(x, y, image=self.cat_img, anchor=tk.CENTER)
+    
+    def update(self):
+        if self.paused:
+            return
 
-class MainApp(tk.Tk):
+        # Rollover animation index if reached the end
+        if self.current_seq_index == len(self.image_sequence): self.current_seq_index = 0
+        
+        # Update image
+        self.show_image(100, 500, self.image_sequence[self.current_seq_index])
+        
+        # Update animation index
+        self.current_seq_index += 1
+        
+        self.canvas.after(self.delay, self.update)
+
+class GameRoot(tk.Tk):
     """Main app class.
     
     Inherits:
@@ -34,7 +64,7 @@ class MainApp(tk.Tk):
     """
     
     # Frame list
-    F_LIST: tuple = (AnimationTest,)
+    F_LIST: tuple = (AnimationFrame,)
     
     # Window sizes
     width: int = 800
@@ -67,7 +97,7 @@ class MainApp(tk.Tk):
             frame.grid(row=0, column=0, sticky="nsew")
 
         # Show the default frame
-        self.show_frame(AnimationTest)
+        self.show_frame(AnimationFrame)
 
     def show_frame(self, page_class: tk.Tk):
         '''Show a frame for the given page class.'''
@@ -76,5 +106,5 @@ class MainApp(tk.Tk):
             frame.tkraise()
 
 if __name__ == '__main__':
-    app = MainApp()
+    app = GameRoot()
     app.mainloop()
