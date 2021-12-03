@@ -217,23 +217,31 @@ class GameFrame(gc.GameFrame):
         super().__init__(parent, root)
         self.root = root
         
-        # Title Label
-        self.label = tk.Label(self, text="Unscramble the WORD!", font=root.title_font)
-        self.label.place(x=400, y=200, anchor='s')
+        # Question label
+        self.qn_label = tk.Label(self, text="", font=root.title_font)
+        self.qn_label.place(x=400, y=200, anchor='s')
         
-        self.ans_canvas = tk.Canvas(self)
-        self.ans_canvas.place(x=400, y=220, width=800, height=88, anchor='n')
+        self.ans_frame = tk.Frame(self)
+        self.ans_frame.grid_rowconfigure(0, weight=1)
+        self.ans_frame.grid_columnconfigure(0, weight=1)
+        self.ans_frame.place(x=400, y=220, width=800, height=88, anchor='n')
 
-        var=tk.StringVar()
-        self.entry = ttk.Entry(self, width=20, font=14, textvariable=var)
-        self.entry.place(x=400, y=244, anchor="n")
-        def get_value(event):
+        answer_input = tk.StringVar()
+        def validate_input(inserted_text):
+            return inserted_text.isalpha()
+        def lowercasify(event):
+            answer_input.set(answer_input.get().lower())
+        def check_ans(event):
             value = self.entry.get() 
             self.game_instance.check_answer(answer = value, skip=value=="")
             self.entry.delete(0,'end')
-        self.entry.bind("<Return>", get_value)
+        validate_cmd = (self.register(validate_input), '%S')
+        self.entry = ttk.Entry(self.ans_frame, width=20, font=16, textvariable=answer_input, validatecommand=validate_cmd)
+        self.entry.grid(row=0, column=0)
+        self.entry.bind("<Return>", check_ans)
+        self.entry.bind("<KeyPress>", lowercasify)
 
-
+        # Backgrounds
         self.background1 = gc.Sprite(0, 0, self.canvas, r'assets/Background_Long.png', anchor=tk.NW)
         self.background2 = gc.Sprite(1600, 0, self.canvas, r'assets/Background_Long.png', anchor=tk.NW)
         
@@ -276,7 +284,7 @@ class GameFrame(gc.GameFrame):
         self.animated_cat.enabled = True
         self.animated_mouse.enabled = True
         
-        self.game_instance.initiate_game(self.root.difficulty, -30)
+        self.game_instance.initiate_game(self.root.difficulty, -20)
         self.game_instance.get_current_scrambled_word()
         
         self.canvas.coords(self.house.sprite, 1200, 590)
@@ -296,7 +304,7 @@ class GameFrame(gc.GameFrame):
         self.end_anim_cat_end_position = int(self.mouse_start_x - ((self.mouse_start_x + 100)/self.game_instance.fast_win_points)*self.game_instance.get_cat_dist_from_mouse() - 200)
         
     def on_question(self, scrambled_word: str) -> None:
-        self.label.config(text=f'{scrambled_word}')
+        self.qn_label.config(text=f'{scrambled_word}')
         
     def on_win(self, win_type: game.GameScrambled.WinType) -> None:
         print(f'Win type: {win_type}')
@@ -327,7 +335,7 @@ class GameFrame(gc.GameFrame):
             
             self.move_background(c_time)
             
-            self.animated_cat.x = int(self.mouse_start_x - ((self.mouse_start_x + 100)/40)*self.game_instance.get_cat_dist_from_mouse() - 200)
+            self.animated_cat.x = int(self.mouse_start_x - ((self.mouse_start_x + 100)/self.game_instance.fast_win_points)*self.game_instance.get_cat_dist_from_mouse() - 200)
             
             # Update time/score
             self.time_label.config(text=f'Time: {round(self.get_time(), 1)}')
