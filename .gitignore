@@ -8,6 +8,4 @@ __pycache__
 tempCodeRunnerFile.py
 
 # High score file
-highscores1.txt
-highscores2.txt
-highscores3.txt
+highscores?.txt
