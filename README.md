@@ -11,7 +11,7 @@
 
 Unscramble the words as fast as possible to get the mouse back to his home.
 
-The word theme is *Animals*!
+The word theme is *Animals and Insects*!
 
 **BUT WATCH OUT!**
 

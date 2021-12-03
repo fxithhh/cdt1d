@@ -22,6 +22,9 @@ class GameScrambled():
 
     results = []
     
+    # Maps the cat running speed to the difficulty
+    diffculty_map: dict = {1: 1, 2: 0.74, 3: 0.5}
+    
     class WinType(Enum):
         LOSE = 0
         WIN = 1
@@ -80,9 +83,6 @@ class GameScrambled():
             return 1
     
     def check_cat_position(self):
-        # Check the position of the cat
-        self.cat_points = self.get_game_time() + self.cat_initial
-        
         # Lose Condition
         if self.get_cat_dist_from_mouse() < 0:
             self.on_game_end_condition(False)
@@ -135,8 +135,11 @@ class GameScrambled():
     def get_mouse_points(self) -> int:
         return self.mouse_point
 
+    def get_cat_points(self) -> float:
+        return self.get_game_time()*self.diffculty_map[self.difficulty] + self.cat_initial
+
     def get_cat_dist_from_mouse(self) -> float:
-        return self.mouse_point - self.cat_points
+        return self.mouse_point - self.get_cat_points()
 
     # TIME TAKEN TO ANSWER EACH QUESTION
     def get_question_time(self) -> float:
@@ -151,7 +154,6 @@ class GameScrambled():
         # Initialize values
         self.mouse_point = 0
         self.cat_initial = cat_initial
-        self.cat_points = 0
         
         # Input 1,2,3 should be button from tkinter
         self.current_list = self.set_current_list()

@@ -264,7 +264,7 @@ class GameFrame(gc.GameFrame):
         self.house = gc.Sprite(1200, 590, self.canvas, r'assets/house.png', anchor=tk.S)
         
         # Theme title display
-        self.theme_label = tk.Label(self, text='Theme: Animals', font=root.header_font, background='#C3EEFF')
+        self.theme_label = tk.Label(self, text='Theme: Animals and Insects', font=root.header_font, background='#C3EEFF')
         self.theme_label.grid(row=0, column=0, sticky='nw', padx=12, pady=12)
         
         # Time/Score display
@@ -505,7 +505,7 @@ class EndWinFrame(gc.GameFrame):
             
             # Save highscore
             if self.root.last_name != '':
-                with open('highscores.txt', 'a+') as f:
+                with open(f'highscores{self.root.difficulty}.txt', 'a+') as f:
                     f.write(f'{self.root.last_name},{self.root.last_score}\n')
             
             self.show_highscores()
@@ -520,9 +520,8 @@ class EndWinFrame(gc.GameFrame):
         
         # Read from highscore file
         scores: list = []
-        with open('highscores.txt','a+') as f:
+        with open(f'highscores{self.root.difficulty}.txt','a+') as f:
             f.seek(0)
-            line = f.readline()
             while True:
                 line = f.readline()
                 if not line:
