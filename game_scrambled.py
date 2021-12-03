@@ -13,6 +13,10 @@ class GameScrambled():
     
     cat_initial: int = 0
     
+    fast_win_points: int = 40
+    
+    total_questions: int = 10
+    
     on_win_callback = None
     on_question_callback = None
 
@@ -25,7 +29,7 @@ class GameScrambled():
     
     def next_question(self):
         self.question_index += 1
-        if self.question_index >= len(self.rando_list):
+        if self.question_index >= len(self.rando_list) or self.question_index >= self.total_questions:
             self.on_game_end_condition(self.get_cat_dist_from_mouse() > 0)
             return
         
@@ -33,8 +37,7 @@ class GameScrambled():
         print("Unscramble this:", self.get_current_scrambled_word())
         self.on_question_callback(self.get_current_scrambled_word())
     
-    def check_answer(self, answer, skip: bool = False):
-        c_time = self.get_question_time()
+    def check_answer(self, answer, skip: bool = False) -> int:
         original_word = self.get_current_original_word()
         question_points = 0
         
@@ -42,42 +45,52 @@ class GameScrambled():
         if skip:
             question_points = -3
             print("Skipped. -3 points.")
+        
+            # Start next question
+            self.next_question()
         else:
-            #correct answer
             if answer.lower() == original_word.lower():
-                if 0 <= c_time < 4:
-                    question_points = 5
-                elif 4 <= c_time < 8:
-                    question_points = 4
-                elif 8 <= c_time < 12:
-                    question_points = 3
-                elif 12 <= c_time < 16:
-                    question_points = 2
-                elif 16 <= c_time < 32:
-                    question_points = 1
-                else:
-                    question_points = 0
-                print(f"You have earned {question_points} points! Time: {c_time}s")
+                # Correct answer
+                question_points = self.get_answer_point_level()
+                print(f"You have earned {question_points} points! Time: {self.get_question_time()}s")
+                
+                # Start next question
+                self.next_question()
             else:
-                #wrong answer
+                # Wrong answer
                 question_points = -1
                 print("Wrong answer. -1 point.")
         
         self.mouse_point += question_points
-        self.results.append((answer, self.get_current_original_word()))
+        # self.results.append((answer, self.get_current_original_word()))
         
-        # Start next question
-        self.next_question()
+        return question_points
+    
+    def get_answer_point_level(self) -> int:
+        c_time = self.get_question_time()
+        if 0 <= c_time < 4:
+            return 5
+        elif 4 <= c_time < 8:
+            return 4
+        elif 8 <= c_time < 12:
+            return 3
+        elif 12 <= c_time < 16:
+            return 2
+        elif 16 <= c_time < 32:
+            return 1
+        else:
+            return 0
     
     def check_cat_position(self):
-        self.cat_points = self.get_game_time()*2 + self.cat_initial # Every 3 Sec cat_point +1
+        # Check the position of the cat
+        self.cat_points = self.get_game_time() + self.cat_initial
         
         # Lose Condition
         if self.get_cat_dist_from_mouse() < 0:
             self.on_game_end_condition(False)
 
-        # Win condition 50 pts to win
-        if self.get_cat_dist_from_mouse() >= 40:
+        # Early win condition
+        if self.get_cat_dist_from_mouse() >= self.fast_win_points:
             self.on_game_end_condition(True, True)
 
     def on_game_end_condition(self, win: bool, epic_win: bool = False) -> WinType:
