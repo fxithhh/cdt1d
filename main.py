@@ -208,7 +208,7 @@ class GameFrame(gc.GameFrame):
     end_anim_start: float = 0
     end_anim_cat_end_position: int = 0
     end_anim_catescape_duration: float = 1
-    end_anim_house_duration: float = 1.5
+    end_anim_house_duration: float = 1.8
     end_anim_mouseescape_duration: float = 3
     
     game_instance = None
