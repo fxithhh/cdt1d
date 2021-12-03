@@ -228,7 +228,7 @@ class GameFrame(gc.GameFrame):
 
         answer_input = tk.StringVar()
         def validate_input(inserted_text):
-            return inserted_text.isalpha()
+            return inserted_text.isalpha() or inserted_text.contains(" ")
         def lowercasify(event):
             answer_input.set(answer_input.get().lower())
         def check_ans(event):
@@ -259,13 +259,13 @@ class GameFrame(gc.GameFrame):
         self.time_label = tk.Label(self, text='Time: 0', font=root.header_font, background='#C3EEFF')
         self.time_label.grid(row=0, column=2, sticky='ne', padx=12, pady=12)
             
-        # Debug button (goes to end screen)
-        def on_debug_pressed():
+        # End game button (goes to lose screen)
+        def on_end_game_pressed():
             root.show_frame(EndLoseFrame)
             self.entry.delete(0,'end')
             
-        button = tk.Button(self, text="End Game", command=lambda: on_debug_pressed(), foreground = "red", background="#C3EEFF", font="Papyrus")
-        button.grid(row=0, column=2, sticky='se')
+        end_game_button = tk.Button(self, text="End Game", command=lambda: on_end_game_pressed(), foreground = "red", background="#C3EEFF", font="Papyrus")
+        end_game_button.grid(row=0, column=2, sticky='se')
         
         self.game_instance = game.GameScrambled()
         self.game_instance.on_win_callback = self.on_win
