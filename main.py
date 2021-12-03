@@ -298,12 +298,12 @@ class GameFrame(gc.GameFrame):
     def on_question(self, scrambled_word: str) -> None:
         self.label.config(text=f'{scrambled_word}')
         
-    def on_win(self, win_type: int) -> None:
+    def on_win(self, win_type: game.GameScrambled.WinType) -> None:
         print(f'Win type: {win_type}')
         
         self.game_end_time = timer()
         
-        if win_type == 0:
+        if win_type == game.GameScrambled.WinType.LOSE:
             self.enabled = False
             self.animated_cat.enabled = False
             self.animated_mouse.enabled = False

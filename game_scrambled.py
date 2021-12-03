@@ -1,6 +1,7 @@
 from timeit import default_timer as timer
 import random
 from wordlist import *
+from enum import Enum
 
 #Request user input
 class GameScrambled():
@@ -16,6 +17,11 @@ class GameScrambled():
     on_question_callback = None
 
     results = []
+    
+    class WinType(Enum):
+        LOSE = 0
+        WIN = 1
+        BIG_WIN = 2
     
     def next_question(self):
         self.question_index += 1
@@ -74,20 +80,20 @@ class GameScrambled():
         if self.get_cat_dist_from_mouse() >= 40:
             self.on_game_end_condition(True, True)
 
-    def on_game_end_condition(self, win: bool, epic_win: bool = False) -> int:
+    def on_game_end_condition(self, win: bool, epic_win: bool = False) -> WinType:
         if win:
             if epic_win:
                 print("DAYUM you left the cat in the dust!!!")
                 if self.on_win_callback:
-                    self.on_win_callback(2)
+                    self.on_win_callback(self.WinType.BIG_WIN)
             else:
                 print("Winner winner chicken dinner!")
                 if self.on_win_callback:
-                    self.on_win_callback(1)
+                    self.on_win_callback(self.WinType.WIN)
         else:
             print("Caught by cat!")
             if self.on_win_callback:
-                self.on_win_callback(0)
+                self.on_win_callback(self.WinType.LOSE)
 
     # call the list from wordlist.py    
     def set_current_list(self):
