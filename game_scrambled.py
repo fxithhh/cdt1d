@@ -13,7 +13,7 @@ class GameScrambled():
     
     cat_initial: int = 0
     
-    fast_win_points: int = 40
+    fast_win_points: int = 30
     
     total_questions: int = 10
     
@@ -68,18 +68,16 @@ class GameScrambled():
     
     def get_answer_point_level(self) -> int:
         c_time = self.get_question_time()
-        if 0 <= c_time < 4:
+        if c_time < 2:
             return 5
-        elif 4 <= c_time < 8:
+        elif c_time < 5:
             return 4
-        elif 8 <= c_time < 12:
+        elif c_time < 9:
             return 3
-        elif 12 <= c_time < 16:
+        elif c_time < 14:
             return 2
-        elif 16 <= c_time < 32:
-            return 1
         else:
-            return 0
+            return 1
     
     def check_cat_position(self):
         # Check the position of the cat

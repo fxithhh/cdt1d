@@ -19,6 +19,8 @@ class MainApp(gc.GameRoot):
     """
 
     difficulty: int = 1
+    last_score: int = 0
+    last_name: str = ""
 
     def __init__(self, width, height, animation_fps, frames_list, *args, **kwargs):
         super().__init__(width, height, animation_fps, frames_list, *args, **kwargs)
@@ -202,6 +204,11 @@ class GameFrame(gc.GameFrame):
     cat_start_x: int = 200
     cat_start_y: int = 500
     
+    cool_text_duration: float = 2
+    cool_text_start: float = 0
+    
+    last_score: int = 0
+    
     begin_anim_playing: bool = False
     begin_anim_start: float = 0
     end_anim_playing: bool = False
@@ -218,14 +225,20 @@ class GameFrame(gc.GameFrame):
         self.root = root
         
         # Question label
-        self.qn_label = tk.Label(self, text="", font=root.title_font)
+        self.qn_label = tk.Label(self, text='', background='white', font=root.title_font)
         self.qn_label.place(x=400, y=200, anchor='s')
         
-        self.ans_frame = tk.Frame(self)
+        # Question frame
+        self.ans_frame = tk.Frame(self, background='white')
         self.ans_frame.grid_rowconfigure(0, weight=1)
         self.ans_frame.grid_columnconfigure(0, weight=1)
         self.ans_frame.place(x=400, y=220, width=800, height=88, anchor='n')
+        
+        # Coolness Label
+        self.cool_label = tk.Label(self.ans_frame, text='', font=root.meme_font, background='white')
+        self.cool_label.place(x=650, y=44, anchor='center')
 
+        # Question entry
         answer_input = tk.StringVar()
         def validate_input(inserted_text):
             return inserted_text.isalpha() or inserted_text.contains(" ")
@@ -233,7 +246,8 @@ class GameFrame(gc.GameFrame):
             answer_input.set(answer_input.get().lower())
         def check_ans(event):
             value = self.entry.get() 
-            self.game_instance.check_answer(answer = value, skip=value=="")
+            self.last_score = self.game_instance.check_answer(answer=value, skip=value=="")
+            self.cool_text_start = timer()
             self.entry.delete(0,'end')
         validate_cmd = (self.register(validate_input), '%S')
         self.entry = ttk.Entry(self.ans_frame, width=20, font=16, textvariable=answer_input, validatecommand=validate_cmd)
@@ -284,13 +298,15 @@ class GameFrame(gc.GameFrame):
         self.animated_cat.enabled = True
         self.animated_mouse.enabled = True
         
-        self.game_instance.initiate_game(self.root.difficulty, -20)
+        self.game_instance.initiate_game(self.root.difficulty, -10)
         self.game_instance.get_current_scrambled_word()
         
         self.canvas.coords(self.house.sprite, 1200, 590)
         self.animated_mouse.x = self.mouse_start_x
         self.qn_label.place(x=400, y=200, anchor='s')
         self.ans_frame.place(x=400, y=220, width=800, height=88, anchor='n')
+        self.entry.delete(0,'end')
+        self.entry.focus()
         
     def begin_starting_animation(self) -> None:
         self.begin_anim_playing = True
@@ -299,9 +315,8 @@ class GameFrame(gc.GameFrame):
         
     def begin_ending_animation(self) -> None:
         self.end_anim_playing = True
-        self.canvas.coords(self.house.sprite, 1200, 590)
         self.end_anim_start = timer()
-        self.end_anim_cat_end_position = int(self.mouse_start_x - ((self.mouse_start_x + 100)/self.game_instance.fast_win_points)*self.game_instance.get_cat_dist_from_mouse() - 200)
+        self.end_anim_cat_end_position = int(self.mouse_start_x - ((self.mouse_start_x - 200)/self.game_instance.fast_win_points)*self.game_instance.get_cat_dist_from_mouse() - 200)
         
     def on_question(self, scrambled_word: str) -> None:
         self.qn_label.config(text=f'{scrambled_word}')
@@ -324,7 +339,7 @@ class GameFrame(gc.GameFrame):
     def move_background(self, c_time: float):
         self.canvas.coords(self.background1.sprite, int(-((c_time*self.scroll_speed + 1600) % 3200) + 1600), 0)
         self.canvas.coords(self.background2.sprite, int(-((c_time*self.scroll_speed) % 3200) + 1600), 0)
-        
+    
     def update(self):
         if not self.enabled: return
 
@@ -335,10 +350,34 @@ class GameFrame(gc.GameFrame):
             
             self.move_background(c_time)
             
-            self.animated_cat.x = int(self.mouse_start_x - ((self.mouse_start_x + 100)/self.game_instance.fast_win_points)*self.game_instance.get_cat_dist_from_mouse() - 200)
+            self.animated_cat.x = int(self.mouse_start_x - ((self.mouse_start_x - 200)/self.game_instance.fast_win_points)*self.game_instance.get_cat_dist_from_mouse() - 200)
             
             # Update time/score
             self.time_label.config(text=f'Time: {round(self.get_time(), 1)}')
+            
+            # Update cool text
+            cool_time = timer() - self.cool_text_start
+            if cool_time < self.cool_text_duration:
+                cool_text = ''
+                
+                if self.last_score == -3:
+                    cool_text = 'skipped'
+                elif self.last_score == -1:
+                    cool_text = 'wrong answer'
+                elif self.last_score == 1:
+                    cool_text = 'good'
+                elif self.last_score == 2:
+                    cool_text = 'noice.'
+                elif self.last_score == 3:
+                    cool_text = 'not bad...'
+                elif self.last_score == 4:
+                    cool_text = 'WOW!'
+                elif self.last_score == 5:
+                    cool_text = 'AWESOME!'
+                
+                self.cool_label.configure(text=cool_text)
+            else:
+                self.cool_label.configure(text='')
             
         else:
             c_end_time = timer() - self.end_anim_start
