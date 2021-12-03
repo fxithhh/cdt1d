@@ -84,7 +84,7 @@ class AnimatedSprite(Sprite):
         super().__init__(x, y, canvas, subsample=subsample, anchor=anchor)
         self.root = root
         self.image_sequence = image_sequence 
-        self.root.update_event.append(self.update)
+        self.root.update_events.append(self.update)
     
     def update(self):
         if not self.enabled: return
@@ -156,7 +156,7 @@ class GameRoot(GameObject, tk.Tk):
     width: int = 800
     height: int = 600
     
-    update_event: list = []
+    update_events: list = []
 
     def __init__(self, width, height, animation_fps, frames_list, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
@@ -224,7 +224,7 @@ class GameRoot(GameObject, tk.Tk):
         return 1000//self.animation_fps 
     
     def update(self):
-        for func in self.update_event: #calls the function inside the update_event list (which is just the updating of the animation)
+        for func in self.update_events: #calls the function inside the update_event list (which is just the updating of the animation)
             func()
         
         #self.after is provided by tinker where after the delay, update(self) will run again
