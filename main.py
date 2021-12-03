@@ -279,6 +279,11 @@ class GameFrame(gc.GameFrame):
         self.game_instance.initiate_game(self.root.difficulty, -30)
         self.game_instance.get_current_scrambled_word()
         
+        self.canvas.coords(self.house.sprite, 1200, 590)
+        self.animated_mouse.x = self.mouse_start_x
+        self.qn_label.place(x=400, y=200, anchor='s')
+        self.ans_frame.place(x=400, y=220, width=800, height=88, anchor='n')
+        
     def begin_starting_animation(self) -> None:
         self.begin_anim_playing = True
         self.canvas.coords(self.tree.sprite, 200, 590)
