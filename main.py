@@ -293,7 +293,7 @@ class GameFrame(gc.GameFrame):
         self.end_anim_playing = True
         self.canvas.coords(self.house.sprite, 1200, 590)
         self.end_anim_start = timer()
-        self.end_anim_cat_end_position = int(self.cat_start_x - ((self.cat_start_x + 200)/40)*self.game_instance.get_cat_dist_from_mouse())
+        self.end_anim_cat_end_position = int(self.mouse_start_x - ((self.mouse_start_x + 100)/self.game_instance.fast_win_points)*self.game_instance.get_cat_dist_from_mouse() - 200)
         
     def on_question(self, scrambled_word: str) -> None:
         self.label.config(text=f'{scrambled_word}')
