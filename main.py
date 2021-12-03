@@ -309,6 +309,8 @@ class GameFrame(gc.GameFrame):
             self.animated_mouse.enabled = False
             self.root.show_frame(EndLoseFrame)
         else:
+            self.qn_label.place_forget()
+            self.ans_frame.place_forget()
             self.begin_ending_animation()
     
     def move_background(self, c_time: float):
