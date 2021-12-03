@@ -172,6 +172,8 @@ class GameFrame(gc.GameFrame):
     """
     
     start_time: float = 0
+    # Time when the game has concluded (excludes ending animations)
+    game_end_time: float = 0
     scroll_speed: int = 500
     
     cat_sequence: list = [
@@ -195,10 +197,19 @@ class GameFrame(gc.GameFrame):
         r'assets/Mouse_frame08.png',
     ]
     
+    mouse_start_x: int = 600
+    mouse_start_y: int = 550
+    cat_start_x: int = 200
+    cat_start_y: int = 500
+    
     begin_anim_playing: bool = False
     begin_anim_start: float = 0
     end_anim_playing: bool = False
     end_anim_start: float = 0
+    end_anim_cat_end_position: int = 0
+    end_anim_catescape_duration: float = 1
+    end_anim_house_duration: float = 1.5
+    end_anim_mouseescape_duration: float = 3
     
     game_instance = None
 
@@ -207,7 +218,7 @@ class GameFrame(gc.GameFrame):
         self.root = root
         
         # Title Label
-        self.label = tk.Label(self, text="Unscramble the WORD", font=root.button_font)
+        self.label = tk.Label(self, text="Unscramble the WORD!", font=root.title_font)
         self.label.place(x=400, y=200, anchor='s')
         
         self.ans_canvas = tk.Canvas(self)
@@ -222,27 +233,30 @@ class GameFrame(gc.GameFrame):
             self.entry.delete(0,'end')
         self.entry.bind("<Return>", get_value)
 
-        
 
         self.background1 = gc.Sprite(0, 0, self.canvas, r'assets/Background_Long.png', anchor=tk.NW)
         self.background2 = gc.Sprite(1600, 0, self.canvas, r'assets/Background_Long.png', anchor=tk.NW)
         
-        self.animated_cat = gc.AnimatedSprite(root, 200, 500, self.canvas, self.cat_sequence, subsample=2)
-        self.animated_mouse = gc.AnimatedSprite(root, 600, 550, self.canvas, self.mouse_sequence, subsample=4)
+        self.animated_cat = gc.AnimatedSprite(root, self.cat_start_x, self.cat_start_y, self.canvas, self.cat_sequence, subsample=2)
+        self.animated_mouse = gc.AnimatedSprite(root, self.mouse_start_x, self.mouse_start_y, self.canvas, self.mouse_sequence, subsample=4)
         
         self.tree = gc.Sprite(100, 590, self.canvas, r'assets/tree.png', anchor=tk.S)
         self.house = gc.Sprite(1200, 590, self.canvas, r'assets/house.png', anchor=tk.S)
         
-        # Score display
-        self.score_label = tk.Label(self, text="Score: 0", font=root.button_font, background='#C3EEFF')
-        self.score_label.grid(row=0, column=0, sticky='nw', padx=12, pady=12)
-
-        def clear_entry():
+        # Theme title display
+        self.theme_label = tk.Label(self, text='Theme: Animals', font=root.header_font, background='#C3EEFF')
+        self.theme_label.grid(row=0, column=0, sticky='nw', padx=12, pady=12)
+        
+        # Time/Score display
+        self.time_label = tk.Label(self, text='Time: 0', font=root.header_font, background='#C3EEFF')
+        self.time_label.grid(row=0, column=2, sticky='ne', padx=12, pady=12)
+            
+        # Debug button (goes to end screen)
+        def on_debug_pressed():
             root.show_frame(EndLoseFrame)
             self.entry.delete(0,'end')
             
-        # Debug button (goes to end screen)
-        button = tk.Button(self, text="End Game", command=lambda: clear_entry(), foreground = "red", background="#C3EEFF", font="Papyrus")
+        button = tk.Button(self, text="End Game", command=lambda: on_debug_pressed(), foreground = "red", background="#C3EEFF", font="Papyrus")
         button.grid(row=0, column=2, sticky='se')
         
         self.game_instance = game.GameScrambled()
@@ -255,6 +269,7 @@ class GameFrame(gc.GameFrame):
     
     def on_enable(self) -> None:
         self.start_time = timer()
+        self.end_anim_playing = False
         self.begin_starting_animation()
         print(self.root.difficulty)
         
@@ -273,37 +288,81 @@ class GameFrame(gc.GameFrame):
         self.end_anim_playing = True
         self.canvas.coords(self.house.sprite, 1200, 590)
         self.end_anim_start = timer()
+        self.end_anim_cat_end_position = int(self.cat_start_x - ((self.cat_start_x + 200)/40)*self.game_instance.get_cat_dist_from_mouse())
         
     def on_question(self, scrambled_word: str) -> None:
         self.label.config(text=f'{scrambled_word}')
         
     def on_win(self, win_type: int) -> None:
         print(f'Win type: {win_type}')
-        self.enabled = False
-        self.animated_cat.enabled = False
-        self.animated_mouse.enabled = False
-       
-        if win_type == 0:
-            self.root.show_frame(EndLoseFrame)
+        
+        self.game_end_time = timer()
         
         if win_type == 0:
+            self.enabled = False
+            self.animated_cat.enabled = False
+            self.animated_mouse.enabled = False
             self.root.show_frame(EndLoseFrame)
         else:
-            self.root.show_frame(EndWinFrame)
+            self.begin_ending_animation()
+    
+    def move_background(self, c_time: float):
+        self.canvas.coords(self.background1.sprite, int(-((c_time*self.scroll_speed + 1600) % 3200) + 1600), 0)
+        self.canvas.coords(self.background2.sprite, int(-((c_time*self.scroll_speed) % 3200) + 1600), 0)
         
     def update(self):
         if not self.enabled: return
-    
+
         c_time = self.get_time()
         
-        self.game_instance.check_cat_position()
-        
-        self.canvas.coords(self.background1.sprite, int(-((c_time*self.scroll_speed + 1600) % 3200) + 1600), 0)
-        self.canvas.coords(self.background2.sprite, int(-((c_time*self.scroll_speed) % 3200) + 1600), 0)
-        self.canvas.coords(self.animated_cat.sprite, int(420 - (420/40)*self.game_instance.get_cat_dist_from_mouse()), 500)
-        
-        self.score_label.config(text=f'Score: {self.game_instance.get_mouse_points()}')
-        
+        if not self.end_anim_playing:
+            self.game_instance.check_cat_position()
+            
+            self.move_background(c_time)
+            
+            self.animated_cat.x = int(self.mouse_start_x - ((self.mouse_start_x + 100)/40)*self.game_instance.get_cat_dist_from_mouse() - 200)
+            
+            # Update time/score
+            self.time_label.config(text=f'Time: {round(self.get_time(), 1)}')
+            
+        else:
+            c_end_time = timer() - self.end_anim_start
+            cat_anim_time = c_end_time
+            house_anim_time = c_end_time - self.end_anim_catescape_duration
+            mouse_anim_time = c_end_time - self.end_anim_catescape_duration - self.end_anim_house_duration
+            
+            # Cat animation -> House animation -> Mouse animation
+            # |<--Background animation playing-->|
+            
+            if mouse_anim_time < 0:
+                self.move_background(c_time)
+            
+            if cat_anim_time < self.end_anim_catescape_duration:
+                # Cat animation
+                new_cat_x = int(self.end_anim_cat_end_position - ((300 + self.end_anim_cat_end_position)* cat_anim_time/self.end_anim_catescape_duration))
+                self.animated_cat.x = new_cat_x
+                
+            elif house_anim_time < self.end_anim_house_duration:
+                # House animation
+                house_x = 1200 - house_anim_time * self.scroll_speed
+                self.canvas.coords(self.house.sprite, house_x, 590)
+                
+            elif mouse_anim_time < self.end_anim_mouseescape_duration:
+                # Mouse animation
+                new_mouse_x = int(self.mouse_start_x + self.scroll_speed * mouse_anim_time)
+                self.animated_mouse.x = new_mouse_x
+                
+            else:
+                # All animation has played, conclude
+                self.end_anim_playing = False
+
+                # Stop animations
+                self.enabled = False
+                self.animated_cat.enabled = False
+                self.animated_mouse.enabled = False
+                
+                # Change to winning screen
+                self.root.show_frame(EndWinFrame)
         
         if self.begin_anim_playing:
             c_begin_time = timer() - self.begin_anim_start
@@ -311,14 +370,11 @@ class GameFrame(gc.GameFrame):
             self.canvas.coords(self.tree.sprite, new_x, 590)
             self.begin_anim_playing = new_x > -300
         
-        if self.end_anim_playing:
-            c_end_time = timer() - self.begin_anim_start
-            new_x = 1200 - c_end_time*self.scroll_speed
-            self.canvas.coords(self.house.sprite, new_x, 590)
-            self.end_anim_playing = new_x > 420
-        
     def get_time(self) -> float:
         return timer() - self.start_time
+    
+    def get_gameplay_duration(self) -> float:
+        return round(self.game_end_time - self.start_time, 1)
 
 class EndWinFrame(gc.GameFrame):
     """Ending page on win.
