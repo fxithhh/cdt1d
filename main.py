@@ -184,7 +184,7 @@ class GameFrame(gc.GameFrame):
         
         self.enabled = False
 
-        self.root.update_event.append(self.update)
+        self.root.update_events.append(self.update)
     
     def on_enable(self) -> None:
         self.start_time = timer()
