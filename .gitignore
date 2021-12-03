@@ -6,3 +6,6 @@ venv/
 __pycache__
 
 tempCodeRunnerFile.py
+
+# High score file
+highscores.txt

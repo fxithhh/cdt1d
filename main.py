@@ -240,8 +240,8 @@ class GameFrame(gc.GameFrame):
 
         # Question entry
         answer_input = tk.StringVar()
-        def validate_input(inserted_text):
-            return inserted_text.isalpha() or inserted_text.contains(" ")
+        def validate_input(inserted_text: str):
+            return inserted_text.isalpha() and not inserted_text.contains(" ")
         def lowercasify(event):
             answer_input.set(answer_input.get().lower())
         def check_ans(event):
@@ -275,9 +275,9 @@ class GameFrame(gc.GameFrame):
             
         # End game button (goes to lose screen)
         def on_end_game_pressed():
-            root.show_frame(EndLoseFrame)
+            root.show_frame(EndWinFrame)
             self.entry.delete(0,'end')
-            
+        
         end_game_button = tk.Button(self, text="End Game", command=lambda: on_end_game_pressed(), foreground = "red", background="#C3EEFF", font="Papyrus")
         end_game_button.grid(row=0, column=2, sticky='se')
         
@@ -327,14 +327,18 @@ class GameFrame(gc.GameFrame):
         self.game_end_time = timer()
         
         if win_type == game.GameScrambled.WinType.LOSE:
+            # Lose
             self.enabled = False
             self.animated_cat.enabled = False
             self.animated_mouse.enabled = False
             self.root.show_frame(EndLoseFrame)
         else:
+            # Win!!
             self.qn_label.place_forget()
             self.ans_frame.place_forget()
             self.begin_ending_animation()
+            self.game_end_time = timer()
+            self.root.last_score = self.get_gameplay_duration()
     
     def move_background(self, c_time: float):
         self.canvas.coords(self.background1.sprite, int(-((c_time*self.scroll_speed + 1600) % 3200) + 1600), 0)
@@ -439,21 +443,89 @@ class EndWinFrame(gc.GameFrame):
 
     def __init__(self, parent, root):
         super().__init__(parent, root)
+        
+        self.root = root
+        
         self.background_image2 = tk.PhotoImage(file="./assets/You Win.png")
-        label = tk.Label(self, image=self.background_image2,
-                         compound = "center")
+        label = tk.Label(self, image=self.background_image2, compound = "center")
         label.grid(row=0, column=0)
         
-        # styling buttons
+        # Highscore recording
+        self.name_enter_frame = tk.Frame(self, background='white')
+        self.name_enter_frame.grid(row=0, column=0, sticky='s')
+        
+        name_enter_label = tk.Label(self.name_enter_frame, text='Enter your name, champion!', font=root.header_font, background='#FFB600')
+        name_enter_label.grid(row=0, column=0, sticky='nsew', padx=(20, 20), pady=(10, 5))
+        
+        name_input = tk.StringVar
+        def validate_input(inserted_text: str):
+            return inserted_text.isalnum()
+        def on_enter_name(event):
+            root.last_name = self.name_entry.get()
+            
+            # Save highscore
+            with open('highscores.txt', 'a+') as f:
+                f.write(f'{root.last_name},{root.last_score}\n')
+            
+            self.show_highscores()
+        
+        validate_cmd = (self.register(validate_input), '%S')
+        self.name_entry = ttk.Entry(self.name_enter_frame, width=20, font=12, textvariable=name_input, validatecommand=validate_cmd, text='Test')
+        self.name_entry.bind("<Return>", on_enter_name)
+        self.name_entry.grid(row=1, column=0, padx=(20, 20), pady=(5, 5))
+        
+        help_label = tk.Label(self.name_enter_frame, text='Press enter to continue', font=root.content_font, background='white')
+        help_label.grid(row=2, column=0, padx=(20, 20), pady=(5, 10))
+        
+        # Highscore frame
+        self.hs_frame = tk.Frame(self, background='#FFB600')
+        
+        hs_title = tk.Label(self.hs_frame, text='Hall of Fame', font=root.title_font, background='#FFB600')
+        hs_title.grid(row=0, column=0, columnspan=2, padx=(20, 20), pady=(20, 10))
+        
+        # Styling buttons
         style = ttk.Style()
         style.configure("TButton", font=root.button_font)
         style.map("TButton",
                   foreground=[('pressed', 'red'), ('active', 'blue')],
                   background=[('pressed', '!disabled', 'black'),
                               ('active', 'white')])
-        button = ttk.Button(self, text="Play Again",
+        self.play_again_button = ttk.Button(self, text="Play Again",
                            command=lambda: root.show_frame(MainMenuFrame))
-        button.grid(row=0, column=0)
+        
+    def on_enable(self):
+        self.play_again_button.grid_forget()
+        self.hs_frame.grid_forget()
+        self.name_enter_frame.grid(row=0, column=0, sticky='s')
+    
+    def show_highscores(self):
+        self.name_enter_frame.grid_forget()
+        self.hs_frame.grid(row=0, column=0)
+        self.play_again_button.grid(row=0, column=0, pady=(20, 20), sticky='s')
+        
+        # Read from highscore file
+        scores: list = []
+        with open('highscores.txt','a+') as f:
+            f.seek(0)
+            line = f.readline()
+            while True:
+                line = f.readline()
+                if not line:
+                    break
+                split_line = line.strip().split(',')
+                if len(split_line) == 2 and split_line[1].isdecimal():
+                    scores.append(tuple(split_line))
+                
+        # Sort highscores
+        scores.sort(key=lambda tup: float(tup[1]))
+                
+        # Create labels (only first 10)
+        score_labels = [(tk.Label(self.hs_frame, text=name, font=self.root.content_font, background='#FFB600'), tk.Label(self.hs_frame, text=f'{time}s', font=self.root.content_font, background='#FFB600')) for name, time in scores[:10]]
+        # Grid those labels!
+        for i, player_label in enumerate(score_labels):
+            name_label, time_label = player_label
+            name_label.grid(row=i+1, column=0, padx=(20, 20), pady= (10, 10), sticky='w')
+            time_label.grid(row=i+1, column=1, padx=(20, 20), pady= (10, 10), sticky='e')
 
 class EndLoseFrame(gc.GameFrame):
     """Ending page on lose.
