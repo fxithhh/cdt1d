@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
-from tkinter import font as tkFont
+from tkinter import font as tkfont
 
 from timeit import default_timer as timer
 
@@ -23,6 +23,12 @@ class MainApp(gc.GameRoot):
     def __init__(self, width, height, animation_fps, frames_list, *args, **kwargs):
         super().__init__(width, height, animation_fps, frames_list, *args, **kwargs)
         
+        # Load fonts
+        self.title_font = tkfont.Font(family='Comic Sans Ms', size=24, weight="bold")
+        self.button_font = tkfont.Font(family='Comic Sans Ms', size=14, weight="bold")
+        self.header_font = tkfont.Font(family='Comic Sans Ms', size=18, weight="bold")
+        self.meme_font = tkfont.Font(family='Papyrus', size=16, weight="bold")
+        self.content_font = tkfont.Font(family='Comic Sans Ms', size=14, weight="bold")
         
         self.load_frames()
         
@@ -38,24 +44,77 @@ class MainMenuFrame(gc.GameFrame):
     def __init__(self, parent, root):
         super().__init__(parent, root)
         
-        
-        self.background_image = tk.PhotoImage(file="./assets/home_bg.png")
-        self.canvas.create_image(400, 300, anchor=tk.CENTER, image=self.background_image)
+        self.grid_rowconfigure(0, weight=2)
+        self.grid_rowconfigure(1, weight=1)
 
-        # self.canvas.pack()
-        # label = tk.Label(self, text="This is the start page", font=root.title_font)
-        # label.pack(side="top", fill="x", pady=10)
+        # Background
+        self.background = gc.Sprite(0, 0, self.canvas, r'assets/home_bg.png', anchor=tk.NW)
+        
+        # Define button style
         style = ttk.Style()
-        style.configure("C.TButton", font=root.content_font, background = '#ff7733', foreground = '#cc0000')
+        style.configure("C.TButton", font=root.button_font, background = '#ff7733', foreground='#cc0000')
         style.map("C.TButton",
                   foreground=[('active', '#006622')],
                   background=[('active', '#00cc44')])
         
-        # create button
+        # Create start and credit buttons
         startBtn = ttk.Button(self, text="Start", style="C.TButton",
                               command=lambda: root.show_frame(DifficultyFrame))
-        startBtn.grid(row=0, column=0, rowspan= 5, pady=(80, 0))
+        creditBtn = ttk.Button(self, text="Credits", style="C.TButton",
+                              command=lambda: root.show_frame(CreditsFrame))
+        startBtn.grid(row=0, column=0, pady=(15, 15), sticky='s')
+        creditBtn.grid(row=1, column=0, pady=(15, 15), sticky='n')
 
+class CreditsFrame(gc.GameFrame):
+    """Game credit page.
+
+    Inherits:
+        gc.GameFrame
+    """
+    
+    def __init__(self, parent, root):
+        super().__init__(parent, root)
+    
+        # Background
+        self.background = gc.Sprite(0, 0, self.canvas, r'assets/home_bg.png', anchor=tk.NW)
+        
+        style = ttk.Style()
+        style.configure("C.TButton", font=root.button_font, background='#ff7733', foreground='#cc0000')
+        style.map("C.TButton",
+                foreground=[('active', '#006622')],
+                background=[('active', '#00cc44')])
+
+        # Create button
+        startBtn = ttk.Button(self, text="Back", style="C.TButton",
+                            command=lambda: root.show_frame(MainMenuFrame))
+        startBtn.grid(row=0, column=0, sticky='se', padx=(20, 20), pady=(10, 10))
+        
+        # Create frame for credits
+        textFrame = tk.Frame(self, background='white')
+        textFrame.grid(row=0, column=0, ipady=10)
+        
+        # Title
+        c_title_label = tk.Label(textFrame, text='Credits', font=root.title_font, background='#FFB600')
+        c_title_label.grid(row=0, column=0, columnspan=2, sticky='nsew', padx=(20, 20), pady=(15, 20))
+        
+        # Team title
+        c_team_label = tk.Label(textFrame, text='21F01 - Team 1J', font=root.header_font, background='white')
+        c_team_label.grid(row=1, column=0, columnspan=2, padx=(20, 20), pady=(10, 10), sticky='w')
+        
+        # Everyone and their roles
+        c_people = [('Cheng Wei Xuan', 'Gameplay Developer, Lead Artist'),
+                    ('Ang Yue Sheng', 'Gameplay Developer, Artist'),
+                    ('Lim Tiang Sui, Faith', 'GUI Developer, Lead UI/UX'),
+                    ('Jeriah Yeo Ruei', 'GUI Developer'),
+                    ('Seah Ying Xiang', 'Noob Developer'),]
+        
+        # Create labels from c_people
+        c_people_labels = [(tk.Label(textFrame, text=name, font=root.content_font, background='white'), tk.Label(textFrame, text=role, font=root.content_font, background='white')) for name, role in c_people]
+        # Grid those labels!
+        for i, person_labels in enumerate(c_people_labels):
+            name_label, role_label = person_labels
+            name_label.grid(row=i+2, column=0, padx=(20, 20), pady= (10, 10), sticky='w')
+            role_label.grid(row=i+2, column=1, padx=(20, 20), pady= (10, 10), sticky='e')
 
 class DifficultyFrame(gc.GameFrame):
     """Difficulty selection page.
@@ -67,15 +126,20 @@ class DifficultyFrame(gc.GameFrame):
     def __init__(self, parent, root):
         super().__init__(parent, root)
 
-        # Title for difficulty level
+        self.grid_rowconfigure(0, weight=2)
+        self.grid_rowconfigure(3, weight=3)
+        
+        # Background
         self.background = gc.Sprite(0, 0, self.canvas, r'assets/Difficulty_page.png', anchor=tk.NW)
+
+        # Title for difficulty level
         label = tk.Label(self, text="Choose a Difficulty Level!",
                          font=root.title_font, foreground="Black", background = "#c3eeff", height=2)
-        label.grid(row=0, column=0, pady=(40, 0))
+        label.grid(row=0, column=0, sticky='s', pady=(40, 0))
 
         # style easy medium hard buttons
         style = ttk.Style()
-        style.configure("TButton", font=root.content_font)
+        style.configure("TButton", font=root.button_font)
         style.map("TButton",
                   foreground=[('pressed', 'red'), ('active', 'blue')],
                   background=[('pressed', '!disabled', 'black'),
@@ -96,10 +160,9 @@ class DifficultyFrame(gc.GameFrame):
         buttonHard = ttk.Button(self, text="Hard", style="TButton",
                                 command=lambda: all_fn(3))
 
-        buttonEasy.grid(row=1, column=0, pady=(25,25))
-        buttonMed.grid(row=2, column=0, pady=(25,25))
-        buttonHard.grid(row=3, column=0, pady=(25,25))
-
+        buttonEasy.grid(row=1, column=0, pady=(15, 15))
+        buttonMed.grid(row=2, column=0, pady=(15, 15))
+        buttonHard.grid(row=3, column=0, pady=(15, 15), sticky='n')
 
 class GameFrame(gc.GameFrame):
     """Main game page.
@@ -144,7 +207,7 @@ class GameFrame(gc.GameFrame):
         self.root = root
         
         # Title Label
-        self.label = tk.Label(self, text="Unscramble the WORD", font=root.content_font)
+        self.label = tk.Label(self, text="Unscramble the WORD", font=root.button_font)
         self.label.place(x=400, y=200, anchor='s')
         
         self.ans_canvas = tk.Canvas(self)
@@ -171,7 +234,7 @@ class GameFrame(gc.GameFrame):
         self.house = gc.Sprite(1200, 590, self.canvas, r'assets/house.png', anchor=tk.S)
         
         # Score display
-        self.score_label = tk.Label(self, text="Score: 0", font=root.content_font, background='#C3EEFF')
+        self.score_label = tk.Label(self, text="Score: 0", font=root.button_font, background='#C3EEFF')
         self.score_label.grid(row=0, column=0, sticky='nw', padx=12, pady=12)
 
         def clear_entry():
@@ -273,7 +336,7 @@ class EndWinFrame(gc.GameFrame):
         
         # styling buttons
         style = ttk.Style()
-        style.configure("TButton", font=root.content_font)
+        style.configure("TButton", font=root.button_font)
         style.map("TButton",
                   foreground=[('pressed', 'red'), ('active', 'blue')],
                   background=[('pressed', '!disabled', 'black'),
@@ -300,7 +363,7 @@ class EndLoseFrame(gc.GameFrame):
 
         # styling buttons
         style = ttk.Style()
-        style.configure("TButton", font=root.content_font)
+        style.configure("TButton", font=root.button_font)
         style.map("TButton",
                   foreground=[('pressed', 'red'), ('active', 'blue')],
                   background=[('pressed', '!disabled', 'black'),
@@ -312,8 +375,10 @@ class EndLoseFrame(gc.GameFrame):
 if __name__ == '__main__':
     width, height = 800, 600
     animation_fps = 60
-    frame_list = [MainMenuFrame, DifficultyFrame, GameFrame, EndWinFrame, EndLoseFrame]
+    frame_list = [MainMenuFrame, CreditsFrame, DifficultyFrame, GameFrame, EndWinFrame, EndLoseFrame]
     
     app = MainApp(width, height, animation_fps, frame_list)
     app.resizable(False, False)
+    app.title('Cat me if you can! by 21F01 - Team 1J')
+    app.iconbitmap('icon.ico')
     app.mainloop()

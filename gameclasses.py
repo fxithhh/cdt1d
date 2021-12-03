@@ -1,5 +1,4 @@
 import tkinter as tk
-from tkinter import font as tkfont
 
 class GameObject:
     """Base game object interface.
@@ -106,10 +105,10 @@ class GameFrame(GameObject, tk.Frame):
     def __init__(self, parent, root):
         tk.Frame.__init__(self, parent)
         
-        self.grid_rowconfigure(4, weight=1) 
+        self.grid_rowconfigure(0, weight=1) 
         self.grid_columnconfigure(0, weight=1)
             
-        self.canvas = tk.Canvas(self, background='red') #create a canvas that will host all the sprites for the cat animation
+        self.canvas = tk.Canvas(self, background='#dddddd') #create a canvas that will host all the sprites for the cat animation
         self.canvas.grid(row=0, column=0, columnspan=5, rowspan=5, sticky="nsew") # Make sure that the canvas covers everything
         
 class DemoFrame(GameFrame): #For testing purposes only, to make sure the animation sprite works well
@@ -162,8 +161,6 @@ class GameRoot(GameObject, tk.Tk):
         tk.Tk.__init__(self, *args, **kwargs)
 
         # Fonts used
-        self.title_font = tkfont.Font(family='Comic Sans Ms', size=18, weight="bold")
-        self.content_font = tkfont.Font(family='Comic Sans Ms', size=18, weight="bold")
 
         self.width, self.height = width, height #fix the window dimensions
         self.animation_fps = animation_fps
