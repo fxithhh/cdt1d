@@ -155,7 +155,7 @@ class GameFrame(gc.GameFrame):
         self.entry.place(x=400, y=244, anchor="n")
         def get_value(event):
             value = self.entry.get() 
-            self.game_instance.check_answer(answer = value)
+            self.game_instance.check_answer(answer = value, skip=value=="")
             self.entry.delete(0,'end')
         self.entry.bind("<Return>", get_value)
 
@@ -173,9 +173,13 @@ class GameFrame(gc.GameFrame):
         # Score display
         self.score_label = tk.Label(self, text="Score: 0", font=root.content_font, background='#C3EEFF')
         self.score_label.grid(row=0, column=0, sticky='nw', padx=12, pady=12)
-        
+
+        def clear_entry():
+            root.show_frame(EndLoseFrame)
+            self.entry.delete(0,'end')
+            
         # Debug button (goes to end screen)
-        button = tk.Button(self, text="End Game", command=lambda: root.show_frame(EndLoseFrame), foreground = "red", background="#C3EEFF", font="Papyrus")
+        button = tk.Button(self, text="End Game", command=lambda: clear_entry(), foreground = "red", background="#C3EEFF", font="Papyrus")
         button.grid(row=0, column=2, sticky='se')
         
         self.game_instance = game.GameScrambled()
@@ -215,6 +219,7 @@ class GameFrame(gc.GameFrame):
         self.enabled = False
         self.animated_cat.enabled = False
         self.animated_mouse.enabled = False
+       
         if win_type == 0:
             self.root.show_frame(EndLoseFrame)
         
@@ -302,7 +307,7 @@ class EndLoseFrame(gc.GameFrame):
                               ('active', 'white')])
         button = ttk.Button(self, text="Play Again",
                            command=lambda: root.show_frame(MainMenuFrame))
-        button.grid(row=0, column=0)
+        button.place(x=400,y=535, anchor = "n")
 
 if __name__ == '__main__':
     width, height = 800, 600
