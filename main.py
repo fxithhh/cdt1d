@@ -7,6 +7,12 @@ from timeit import default_timer as timer
 import gameclasses as gc
 import game_scrambled as game
 
+def is_float(element: any) -> bool:
+    try:
+        float(element)
+        return True
+    except ValueError:
+        return False
 
 class MainApp(gc.GameRoot):
     """Main app class.
@@ -30,6 +36,7 @@ class MainApp(gc.GameRoot):
         self.button_font = tkfont.Font(family='Comic Sans Ms', size=14, weight="bold")
         self.header_font = tkfont.Font(family='Comic Sans Ms', size=18, weight="bold")
         self.meme_font = tkfont.Font(family='Papyrus', size=16, weight="bold")
+        self.big_meme_font = tkfont.Font(family='Papyrus', size=20, weight="bold")
         self.content_font = tkfont.Font(family='Comic Sans Ms', size=14, weight="bold")
         
         self.load_frames()
@@ -239,21 +246,12 @@ class GameFrame(gc.GameFrame):
         self.cool_label.place(x=650, y=44, anchor='center')
 
         # Question entry
-        answer_input = tk.StringVar()
-        def validate_input(inserted_text: str):
-            return inserted_text.isalpha() and not inserted_text.contains(" ")
-        def lowercasify(event):
-            answer_input.set(answer_input.get().lower())
-        def check_ans(event):
-            value = self.entry.get() 
-            self.last_score = self.game_instance.check_answer(answer=value, skip=value=="")
-            self.cool_text_start = timer()
-            self.entry.delete(0,'end')
+        self.answer_input = tk.StringVar()
+        def validate_input(inserted_text):
+            return inserted_text.isalpha()
         validate_cmd = (self.register(validate_input), '%S')
-        self.entry = ttk.Entry(self.ans_frame, width=20, font=16, textvariable=answer_input, validatecommand=validate_cmd)
+        self.entry = ttk.Entry(self.ans_frame, width=20, font=16, textvariable=self.answer_input, validate='key', validatecommand=validate_cmd)
         self.entry.grid(row=0, column=0)
-        self.entry.bind("<Return>", check_ans)
-        self.entry.bind("<KeyPress>", lowercasify)
 
         # Backgrounds
         self.background1 = gc.Sprite(0, 0, self.canvas, r'assets/Background_Long.png', anchor=tk.NW)
@@ -305,8 +303,22 @@ class GameFrame(gc.GameFrame):
         self.animated_mouse.x = self.mouse_start_x
         self.qn_label.place(x=400, y=200, anchor='s')
         self.ans_frame.place(x=400, y=220, width=800, height=88, anchor='n')
+
+        def lowercasify(event):
+            self.answer_input.set(self.answer_input.get().lower())
+        def check_ans(event):
+            value = self.entry.get() 
+            self.last_score = self.game_instance.check_answer(answer=value, skip=value=="")
+            self.cool_text_start = timer()
+            self.entry.delete(0,'end')
+        self.entry.bind("<Return>", check_ans)
+        self.entry.bind("<KeyPress>", lowercasify)
         self.entry.delete(0,'end')
         self.entry.focus()
+    
+    def on_disable(self) -> None:
+        self.entry.unbind("<Return>")
+        self.entry.unbind("<KeyPress>")
         
     def begin_starting_animation(self) -> None:
         self.begin_anim_playing = True
@@ -458,20 +470,10 @@ class EndWinFrame(gc.GameFrame):
         name_enter_label.grid(row=0, column=0, sticky='nsew', padx=(20, 20), pady=(10, 5))
         
         name_input = tk.StringVar
-        def validate_input(inserted_text: str):
+        def validate_name_input(inserted_text: str):
             return inserted_text.isalnum()
-        def on_enter_name(event):
-            root.last_name = self.name_entry.get()
-            
-            # Save highscore
-            with open('highscores.txt', 'a+') as f:
-                f.write(f'{root.last_name},{root.last_score}\n')
-            
-            self.show_highscores()
-        
-        validate_cmd = (self.register(validate_input), '%S')
-        self.name_entry = ttk.Entry(self.name_enter_frame, width=20, font=12, textvariable=name_input, validatecommand=validate_cmd, text='Test')
-        self.name_entry.bind("<Return>", on_enter_name)
+        validate_cmd = (self.register(validate_name_input), '%S')
+        self.name_entry = ttk.Entry(self.name_enter_frame, width=20, font=12, textvariable=name_input, validate='key', validatecommand=validate_cmd)
         self.name_entry.grid(row=1, column=0, padx=(20, 20), pady=(5, 5))
         
         help_label = tk.Label(self.name_enter_frame, text='Press enter to continue', font=root.content_font, background='white')
@@ -480,7 +482,7 @@ class EndWinFrame(gc.GameFrame):
         # Highscore frame
         self.hs_frame = tk.Frame(self, background='#FFB600')
         
-        hs_title = tk.Label(self.hs_frame, text='Hall of Fame', font=root.title_font, background='#FFB600')
+        hs_title = tk.Label(self.hs_frame, text='Hall of Fame', font=root.big_meme_font, background='#FFB600')
         hs_title.grid(row=0, column=0, columnspan=2, padx=(20, 20), pady=(20, 10))
         
         # Styling buttons
@@ -497,10 +499,23 @@ class EndWinFrame(gc.GameFrame):
         self.play_again_button.grid_forget()
         self.hs_frame.grid_forget()
         self.name_enter_frame.grid(row=0, column=0, sticky='s')
+        self.name_entry.focus()
+        def on_enter_name(event):
+            self.root.last_name = self.name_entry.get()
+            
+            # Save highscore
+            if self.root.last_name != '':
+                with open('highscores.txt', 'a+') as f:
+                    f.write(f'{self.root.last_name},{self.root.last_score}\n')
+            
+            self.show_highscores()
+        self.name_entry.bind("<Return>", on_enter_name)
     
     def show_highscores(self):
+        self.name_entry.unbind("<Return>")
+        
         self.name_enter_frame.grid_forget()
-        self.hs_frame.grid(row=0, column=0)
+        self.hs_frame.grid(row=0, column=0, ipady=10)
         self.play_again_button.grid(row=0, column=0, pady=(20, 20), sticky='s')
         
         # Read from highscore file
@@ -513,7 +528,8 @@ class EndWinFrame(gc.GameFrame):
                 if not line:
                     break
                 split_line = line.strip().split(',')
-                if len(split_line) == 2 and split_line[1].isdecimal():
+                if len(split_line) == 2 and is_float(split_line[1]):
+                    split_line[1] = float(split_line[1])
                     scores.append(tuple(split_line))
                 
         # Sort highscores
@@ -524,8 +540,8 @@ class EndWinFrame(gc.GameFrame):
         # Grid those labels!
         for i, player_label in enumerate(score_labels):
             name_label, time_label = player_label
-            name_label.grid(row=i+1, column=0, padx=(20, 20), pady= (10, 10), sticky='w')
-            time_label.grid(row=i+1, column=1, padx=(20, 20), pady= (10, 10), sticky='e')
+            name_label.grid(row=i+1, column=0, padx=(20, 20), pady= (2, 2), sticky='w')
+            time_label.grid(row=i+1, column=1, padx=(20, 20), pady= (2, 2), sticky='e')
 
 class EndLoseFrame(gc.GameFrame):
     """Ending page on lose.
