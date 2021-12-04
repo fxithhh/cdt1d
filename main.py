@@ -111,11 +111,11 @@ class CreditsFrame(gc.GameFrame):
         c_team_label.grid(row=1, column=0, columnspan=2, padx=(20, 20), pady=(10, 10), sticky='w')
         
         # Everyone and their roles
-        c_people = [('Cheng Wei Xuan', 'Gameplay Developer, Lead Artist'),
+        c_people = [('Seah Ying Xiang', 'Lead Developer'),
+                    ('Cheng Wei Xuan', 'Gameplay Developer, Lead Artist'),
                     ('Ang Yue Sheng', 'Gameplay Developer, Artist'),
                     ('Lim Tiang Sui, Faith', 'GUI Developer, Lead UI/UX'),
-                    ('Jeriah Yeo Ruei', 'GUI Developer'),
-                    ('Seah Ying Xiang', 'Noob Developer'),]
+                    ('Jeriah Yeo Ruei', 'GUI Developer')]
         
         # Create labels from c_people
         c_people_labels = [(tk.Label(textFrame, text=name, font=root.content_font, background='white'), tk.Label(textFrame, text=role, font=root.content_font, background='white')) for name, role in c_people]
@@ -273,7 +273,7 @@ class GameFrame(gc.GameFrame):
             
         # End game button (goes to lose screen)
         def on_end_game_pressed():
-            root.show_frame(EndWinFrame)
+            root.show_frame(EndLoseFrame)
             self.entry.delete(0,'end')
         
         end_game_button = tk.Button(self, text="End Game", command=lambda: on_end_game_pressed(), foreground = "red", background="#C3EEFF", font="Papyrus")
