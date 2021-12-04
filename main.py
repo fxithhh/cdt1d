@@ -586,25 +586,25 @@ class GameFrame(gc.GameFrame):
             house_anim_time = c_end_time - self.end_anim_catescape_duration
             mouse_anim_time = c_end_time - self.end_anim_catescape_duration - self.end_anim_house_duration
             
-            # Animation flow will be: Cat animation -> House animation -> Mouse animation
+            # Animation flow will be: Cat will disappear -> House appears -> Mouse runs forward into house
             
-            """<--Background animation playing-->"""
+            """<END ANIMATION RUNNING>"""
             
             if mouse_anim_time < 0: #End animation hasn't ened, background still moves
                 self.move_background(c_time)
             
-            if cat_anim_time < self.end_anim_catescape_duration: #End animation hasn't ended
-                #Get the new x coordinate of the cat
+            if cat_anim_time < self.end_anim_catescape_duration: 
+                #X coordinate is now towards 0 as the cat slowly leaves the screen
                 new_cat_x = int(self.end_anim_cat_end_position - ((300 + self.end_anim_cat_end_position)* cat_anim_time/self.end_anim_catescape_duration))
                 self.animated_cat.x = new_cat_x
                 
-            elif house_anim_time < self.end_anim_house_duration: #End animation hasn't ended
-                #House is slowly moving closer to the window screen such that end animation can end
+            elif house_anim_time < self.end_anim_house_duration: 
+                #House appears onto the screen at the end to signify the ending
                 house_x = 1200 - house_anim_time * self.scroll_speed
                 self.canvas.coords(self.house.sprite, house_x, 590)
                 
             elif mouse_anim_time < self.end_anim_mouseescape_duration:
-                #Mouse continues run as end animation hasn't end
+                #Mouse starts to move forward towards house
                 new_mouse_x = int(self.mouse_start_x + self.scroll_speed * mouse_anim_time)
                 self.animated_mouse.x = new_mouse_x
                 
@@ -791,6 +791,8 @@ class EndLoseFrame(gc.GameFrame):
         button = ttk.Button(self, text="Play Again",
                            command=lambda: root.show_frame(MainMenuFrame)) #Redirect back to main screen
         button.place(x=400,y=535, anchor = "n")
+
+
 
 if __name__ == '__main__':
     width, height = 800, 600 #Fixed window screen
