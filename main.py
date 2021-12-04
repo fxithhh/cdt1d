@@ -273,7 +273,7 @@ class GameFrame(gc.GameFrame):
             
         # End game button (goes to lose screen)
         def on_end_game_pressed():
-            root.show_frame(EndWinFrame)
+            root.show_frame(EndLoseFrame)
             self.entry.delete(0,'end')
         
         end_game_button = tk.Button(self, text="End Game", command=lambda: on_end_game_pressed(), foreground = "red", background="#C3EEFF", font="Papyrus")
