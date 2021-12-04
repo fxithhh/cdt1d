@@ -65,16 +65,7 @@ class AnimatedSprite(Sprite):
         Sprite
     """
     #creating the list of the cat frames for the animation
-    image_sequence: list = [
-        r'assets/Cat_frame01.png',
-        r'assets/Cat_frame02.png',
-        r'assets/Cat_frame03.png',
-        r'assets/Cat_frame04.png',
-        r'assets/Cat_frame05.png',
-        r'assets/Cat_frame06.png',
-        r'assets/Cat_frame07.png',
-        r'assets/Cat_frame08.png',
-    ]
+    image_sequence: list = []
     
     #current_seq_index stores the index of the current frame in image_sequence, thus starting from the first frame
     current_seq_index: int = 0 

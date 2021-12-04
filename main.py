@@ -142,7 +142,7 @@ class CreditsFrame(gc.GameFrame):
                     ('Cheng Wei Xuan', 'Gameplay Developer, Lead Artist'),
                     ('Ang Yue Sheng', 'Gameplay Developer, Artist'),
                     ('Lim Tiang Sui, Faith', 'GUI Developer, Lead UI/UX'),
-                    ('Jeriah Yeo Ruei', 'GUI Developer')]
+                    ('Jeriah Yeo Ruei', 'GUI Developer, Content Lead')]
         
         # Create labels from c_people
         c_people_labels = [(tk.Label(textFrame, text=name, font=root.content_font, background='white'), 
