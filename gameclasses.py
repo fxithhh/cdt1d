@@ -204,6 +204,7 @@ class GameRoot(GameObject, tk.Tk):
                 self.current_frame.enabled = True
                 self.current_frame.on_enable()
     
+    
     def load_frames(self):
         # Put all of the pages in the same location and the one on the top of the stacking order will be visible
         self.frames = {}

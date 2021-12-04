@@ -18,8 +18,11 @@ class GameScrambled():
     rando_list: list = []
     question_index: int = 0
 
-    """Creating a function to call the wordlist from wordlist.py based on difficulty chosen"""
+
     def set_current_list(self):
+        """
+        Creating a function to call the wordlist from wordlist.py based on difficulty chosen
+        """
         if self.difficulty == 1:
             return easyword
 
@@ -32,19 +35,29 @@ class GameScrambled():
         else:
             print("Something went wrong")
 
-    """Creating a function to randomise the words inside the current list"""
+
     def randomize_list(self):
+        """
+        Creating a function to randomise the words inside the current list
+        """
         return random.shuffle(self.current_list)
 
-    """Creating a function to randomise the letters in the word"""
     def randomize(self, word):
+        """
+        Creating a function to randomise the letters in the word
+        """
         letters = []
         for char in word:
             letters.append(char) #Creating a list of all the letters in the word
 
         random.shuffle(letters) #Shuffling the letters
 
-        return ''.join(letters) #Return the scrambled words
+        random_word = ''.join(letters)
+
+        while random_word == word: #Make sure the reshuffled words do not reshuffle to the original word
+            random.shuffle(letters)
+
+        return random_word #Return the scrambled words
 
     #Get the current shuffled word
     def get_current_scrambled_word(self) -> str:
@@ -92,16 +105,21 @@ class GameScrambled():
         return timer() - self.game_time_start
 
 
-    """Create a function that determines the points based on the time taken to solve the question"""
+ 
     def get_answer_point_level(self) -> int: #Returns an int
+
+        """
+        Create a function that determines the points based on the time taken to solve the question
+        """
+
         c_time = self.get_question_time() #Getting the time taken to solve the question
         
         #Point system
-        if c_time < 3:
+        if c_time < 2:
             return 5
-        elif c_time < 6:
+        elif c_time < 5:
             return 4
-        elif c_time < 10:
+        elif c_time < 9:
             return 3
         elif c_time < 15:
             return 2
@@ -109,18 +127,25 @@ class GameScrambled():
             return 1
 
 
-    """Create a class to set up the type of wins"""
     class WinType(Enum):
+
+        """
+        Create a class to set up the type of wins
+        """
+
         LOSE = 0
         WIN = 1
         BIG_WIN = 2
 
 
-    """
-    Create a function that determines which type of win did the user achieve
-    Function will return the values from WinType Class
-    """
+
     def on_game_end_condition(self, win: bool, epic_win: bool = False) -> WinType:
+
+        """
+        Create a function that determines which type of win did the user achieve
+        Function will return the values from WinType Class
+        """
+
         if win:
             if epic_win:
                 print("DAYUM you left the cat in the dust!!!")
@@ -137,9 +162,12 @@ class GameScrambled():
 
 
 
-    """Creating a function that checks if the cat has catch up with the mouse"""
     def check_cat_position(self):
         
+        """
+        Creating a function that checks if the cat has catch up with the mouse
+        """
+
         #Lose Condition
         if self.get_cat_dist_from_mouse() < 0:
             self.on_game_end_condition(False)
@@ -164,8 +192,11 @@ class GameScrambled():
     results = []
 
     
-    """Create a function to give the new question"""
     def next_question(self):
+        """
+        Create a function to give the new question
+        """
+
         self.question_index += 1
 
         #Checking if all the questions have been asked, if all have been asked get the win condition and end the game
@@ -183,13 +214,16 @@ class GameScrambled():
         self.on_question_callback(self.get_current_scrambled_word())
     
     
-    """
-    Create a function to check the answer and award points respectively, 
-    the function has to return an int as defined by f()-> int 
-        
-    Summary for the point system: Skip: -3, Wrong: -1, Correct: Depending on the time
-    """
+
     def check_answer(self, answer, skip: bool = False) -> int: 
+
+        """
+        Create a function to check the answer and award points respectively, 
+        the function has to return an int as defined by f()-> int 
+            
+        Summary for the point system: Skip: -3, Wrong: -1, Correct: Depending on the time
+        """
+
         original_word = self.get_current_original_word() #getting the original word
         question_points = 0 #points for this specific question is initially 0
         
@@ -239,7 +273,7 @@ class GameScrambled():
         
         # Creates the list of the scrambled letters for the words
         self.rando_list = [self.randomize(word) for word in self.current_list]
-        self.question_index = -1 # Needs to offset the initial addition 
+        self.question_index = -1 # Needs to offset the initial addition from self.next_question 
         self.results = []
         
         # Begin game timer
