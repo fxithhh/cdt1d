@@ -106,8 +106,8 @@ class GameScrambled():
 
         random_word = ''.join(letters)
 
-        while random_word == word: #Make sure the reshuffled words do not reshuffle to the original word
-            random.shuffle(letters)
+        while random_word == word: # Make sure the reshuffled words do not reshuffle to the original word
+            random_word = random.shuffle(word)
 
         return random_word #Return the scrambled words
 
