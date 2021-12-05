@@ -49,7 +49,7 @@ def check_answer(scrambled_word, original_word):
         time.sleep(2)
     return point,(useranswer,original_word)
 
-#Call the list from wordlist.py    
+#Call the list from wordlist.py
 def set_current_list(difficulty):
     if difficulty == 1:
         return easyword
@@ -75,7 +75,7 @@ def initiate_game(current_list):
     #Mouse Speed
     mouse_point = 4
     #Input 1,2,3 should be button from tkinter
-    # current_list = set_current_list(int(input("1 or 2 or 3: "))) 
+    # current_list = set_current_list(int(input("1 or 2 or 3: ")))
     #Shuffles order of words
     random.shuffle(current_list)
     #list of random words
@@ -105,7 +105,7 @@ def initiate_game(current_list):
             break
         got_win = None
 
-    
+
     #Check all the guess and answers
     print("Let's see your answers!")
     for twin_values in results:
@@ -116,7 +116,7 @@ def initiate_game(current_list):
         print("You've turned into Ratatoullie")
     else:
         print("Barely got by")
-   
+
 
 if __name__ == "__main__":
     initiate_game()

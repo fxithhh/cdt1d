@@ -16,20 +16,20 @@ from wordlist import *
 
 class GameScrambled():
     """Core game logic class.
-    
+
     Members:
         difficulty_map (Dict[int, int]): Maps the speed of the cat to the difficulty setting.
         original_list (List[str]): Original word list
         shuffled_list (List[str]): Shuffled word list with shuffled words.
         question_index (int): Current position on the list of words that the player has progressed.
-        
+
         cat_initial (int): Amount of points the cat starts the game with.
         game_time_start (float): The system time at the moment the game starts.
         fast_win_points (int): The point difference between the player and the cat for an early win.
         on_question_callback (Callable[[str], None]): Callback function that gets invoked when a new question is asked. Passes the new scrambled word as argument.
         on_win_callback (Callable[[WinType], None]): Callback function that gets invoked when a winning condition is triggered (e.g. early win, normal win, loss). Passes the WinType of the round as argument.
     """
-    
+
     class WinType(Enum):
         """Types of game end conditions.
         """
@@ -37,20 +37,20 @@ class GameScrambled():
         LOSE = 0
         WIN = 1
         BIG_WIN = 2
-    
+
     # Member list
     difficulty_map: Dict[int, int] = {1: 1, 2: 0.74, 3: 0.5} # Maps the cat running speed to the difficulty
     original_list: List[str] = [] # Original word list
     shuffled_list: List[str] = []
     total_questions: int = 10 # Total number of questions per round
     question_index: int = 0
-    
+
     cat_initial: int = 0 # Amount of points the cat starts the game with.
     game_time_start: float = 0.0 # The system time at the moment the game starts.
     fast_win_points: int = 30 # The point difference between the player and the cat for an early win.
     on_question_callback: Callable[[str], None] = None
     on_win_callback: Callable[[WinType], None] = None
-    
+
     results = []
 
 
@@ -59,14 +59,14 @@ class GameScrambled():
     CREATING RANDOMISED WORD LIST
     -----------------------------------------------------------------------------------------------------------------------------------------------
     """
-    
+
     def get_current_word_list(self) -> List[str]:
         """Sets the word list for the current difficulty.
 
         Returns:
             List[str]: Word list of the current difficulty.
         """
-                
+
         if self.difficulty == 1:
             return easyword
 
@@ -85,7 +85,7 @@ class GameScrambled():
         Returns:
             List[str]: Shuffled word list.
         """
-        
+
         return random.shuffle(self.original_list)
 
     def shuffle_word(self, word: str) -> str:
@@ -97,7 +97,7 @@ class GameScrambled():
         Returns:
             str: Shuffled word.
         """
-        
+
         letters = []
         for char in word:
             letters.append(char) #Creating a list of all the letters in the word
@@ -117,7 +117,7 @@ class GameScrambled():
         Returns:
             str: Current scrambled word.
         """
-        
+
         return self.shuffled_list[self.question_index]
 
     def get_current_original_word(self) -> str:
@@ -141,7 +141,7 @@ class GameScrambled():
         Returns:
             int: Current mouse points.
         """
-        
+
         return self.mouse_point
 
     def get_cat_points(self) -> float:
@@ -151,7 +151,7 @@ class GameScrambled():
         Returns:
             float: Current cat points.
         """
-        
+
         return self.get_game_time()*self.difficulty_map[self.difficulty] + self.cat_initial
 
     def get_cat_dist_from_mouse(self) -> float:
@@ -160,7 +160,7 @@ class GameScrambled():
         Returns:
             float: Difference between the cat points and mouse points.
         """
-        
+
         return self.get_mouse_points() - self.get_cat_points()
 
     def get_question_time(self) -> float:
@@ -169,9 +169,9 @@ class GameScrambled():
         Returns:
             float: Current time elapsed on the current question.
         """
-        
+
         return current_time() - self.qn_time_start
-    
+
     def get_game_time(self) -> float:
         """Gets the time elapsed for the current game.
 
@@ -182,7 +182,7 @@ class GameScrambled():
 
     def get_answer_point_level(self) -> int:
         """Gets the time-based points rewarded for the current question. Depends on when this function is called.
-        
+
         Rewards in priority:
             5 points if under 2s\n
             4 points if under 5s\n
@@ -193,10 +193,10 @@ class GameScrambled():
         Returns:
             int: Points rewarded.
         """
-        
+
         # Time taken to solve the question
         c_time = self.get_question_time()
-        
+
         #Point system
         if c_time < 2:
             return 5
@@ -250,7 +250,7 @@ class GameScrambled():
     -----------------------------------------------------------------------------------------------------------------------------------------------
     """
 
-    
+
     def next_question(self) -> None:
         """Triggers the next question, or end the game if the total questions asked has been reached.
         """
@@ -258,22 +258,23 @@ class GameScrambled():
         self.question_index += 1
 
         # Checking if all the questions have been asked, if all have been asked get the win condition and end the game
-        if self.question_index >= len(self.shuffled_list) or self.question_index >= self.total_questions: 
+        if self.question_index >= len(self.shuffled_list) or self.question_index >= self.total_questions:
 
             # Give the end game condition, if cat_dist_from_mouse <0, return False (Lose), else return True (Win but not BIG WIN)
-            self.on_game_end_condition(self.get_cat_dist_from_mouse() > 0) 
+            self.on_game_end_condition(self.get_cat_dist_from_mouse() > 0)
             return
-        
-        # Start the timer the moment the new question is given 
+
+        # Start the timer the moment the new question is given
         self.qn_time_start = current_time()
         print("Unscramble this:", self.get_current_scrambled_word())
 
         # Replace the variable on_question_callback with the current scrambled word
-        self.on_question_callback(self.get_current_scrambled_word())
+        if self.on_question_callback:
+            self.on_question_callback(self.get_current_scrambled_word())
 
-    def check_answer(self, answer: str, skip: bool = False) -> int: 
+    def check_answer(self, answer: str, skip: bool = False) -> int:
         """Check the player's answer and award points respectively.
-            
+
         Summary for the point system: Skip: -3, Wrong: -1, Correct: Depending on the time
 
         Args:
@@ -282,39 +283,39 @@ class GameScrambled():
 
         Returns:
             int: Amount of points obtained from the answer. Can be negative (in the case of a skip or wrong answer).
-        """        
+        """
 
         original_word = self.get_current_original_word() # Get the original (unscrambled) word
         question_points = 0 # Initialize the question points variable
-        
-        # Check guesses 
+
+        # Check guesses
         if skip:
             # Skipped
-            
-            question_points = -3 
+
+            question_points = -3
             print("Skipped. -3 points.")
-        
+
             self.next_question() # Start next question
-        
+
         else:
             if answer.lower() == original_word.lower():
                 # Correct answer
-                
+
                 question_points = self.get_answer_point_level() # Get the amt of points awared based on the time taken
                 print(f"You have earned {question_points} points! Time: {self.get_question_time()}s")
-                
+
                 self.next_question() # Start next question
-            
+
             else:
-                # Wrong answer 
-                
-                question_points = -1 
+                # Wrong answer
+
+                question_points = -1
                 print("Wrong answer. -1 point.")
-    
+
                 self.next_question() # Start the next question
-        
+
         self.mouse_point += question_points # Collating the total amount of points
-        
+
         return question_points
 
     def initiate_game(self, difficulty: int, cat_initial: int) -> None:
@@ -324,26 +325,26 @@ class GameScrambled():
             difficulty (int): Difficulty for this game round.
             cat_initial (int): Initial points for the cat.
         """
-        
-        # Initialize point values 
+
+        # Initialize point values
         self.mouse_point = 0
         self.cat_initial = cat_initial
 
         self.difficulty = difficulty # Difficulty chosen by user
         self.original_list = self.get_current_word_list()
         print("Difficulty:", self.difficulty, self.original_list)
-        
-        # Shuffle the order of words 
+
+        # Shuffle the order of words
         self.shuffle_list()
-        
+
         # Creates the list of the scrambled letters for the words
         self.shuffled_list = [self.shuffle_word(word) for word in self.original_list]
-        self.question_index = -1 # Offset the initial increment from self.next_question 
+        self.question_index = -1 # Offset the initial increment from self.next_question
         self.results = []
-        
+
         # Record game start time
         self.game_time_start = current_time()
-        
+
         # Begin the first question
         self.next_question()
 
