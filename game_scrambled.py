@@ -313,8 +313,6 @@ class GameScrambled():
                 question_points = -1
                 print("Wrong answer. -1 point.")
 
-                self.next_question() # Start the next question
-
         self.mouse_point += question_points # Collating the total amount of points
 
         return question_points
