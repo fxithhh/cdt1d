@@ -100,9 +100,9 @@ class GameScrambled():
 
         letters = []
         for char in word:
-            letters.append(char) #Creating a list of all the letters in the word
+            letters.append(char) # Creating a list of all the letters in the word
 
-        random.shuffle(letters) #Shuffling the letters
+        random.shuffle(letters) # Shuffling the letters
 
         random_word = ''.join(letters)
 
@@ -110,7 +110,7 @@ class GameScrambled():
             random.shuffle(letters)
             random_word = ''.join(letters)
 
-        return random_word #Return the scrambled words
+        return random_word # Return the scrambled words
 
     def get_current_scrambled_word(self) -> str:
         """Gets the scrambled word for the current question.
@@ -198,7 +198,7 @@ class GameScrambled():
         # Time taken to solve the question
         c_time = self.get_question_time()
 
-        #Point system
+        # Point system
         if c_time < 2:
             return 5
         elif c_time < 5:

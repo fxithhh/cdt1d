@@ -309,7 +309,7 @@ class DifficultyFrame(gc.GameFrame):
         btn_easy.grid(row=1, column=0, pady=(15, 15))
         btn_medium.grid(row=2, column=0, pady=(15, 15))
         btn_hard.grid(row=3, column=0, pady=(15, 15), sticky='n')
-        
+
         btn_back.grid(row=3, column=0, padx=(15, 15), pady=(25, 25), sticky='se')
 
 
@@ -401,7 +401,7 @@ class GameFrame(gc.GameFrame):
         # Question entry
         self.answer_input = tk.StringVar()
 
-        # Only allow letters to be inputed
+        # Only allow letters to be inputted
         def validate_input(inserted_text):
             return inserted_text.isalpha()
 
@@ -411,7 +411,8 @@ class GameFrame(gc.GameFrame):
 
         # Backgrounds
         self.spr_bg1 = gc.Sprite(0, 0, self.canvas, r'assets/Background_Long.png', anchor=tk.NW)
-        self.spr_bg2 = gc.Sprite(1600, 0, self.canvas, r'assets/Background_Long.png', anchor=tk.NW) #loop the background again
+        self.spr_bg2 = gc.Sprite(1600, 0, self.canvas, r'assets/Background_Long.png', anchor=tk.NW)
+        # loop the background again
 
         # Set the cat, resized to be 1/2 the size of the original image
         self.animspr_cat = gc.AnimatedSprite(root, self.cat_start_x, self.cat_start_y, self.canvas, self.cat_sequence, subsample=2)
@@ -435,8 +436,8 @@ class GameFrame(gc.GameFrame):
 
         # End game button (goes to lose screen)
         def on_end_game_pressed():
-            root.show_frame(EndLoseFrame) #Switch to Lose frame
-            self.entry.delete(0,'end') #Clear all contents in entry (input box)
+            root.show_frame(EndLoseFrame) # Switch to Lose frame
+            self.entry.delete(0,'end') # Clear all contents in entry (input box)
 
         # Creating button
         btn_end_game = tk.Button(self, text="End Game",
@@ -568,7 +569,7 @@ class GameFrame(gc.GameFrame):
 
         Returns:
             float: Total time elapsed for the game round, rounded to 1 d.p.
-        """        
+        """
         return round(self.game_end_time - self.start_time, 1)
 
     # Update loop
@@ -732,7 +733,6 @@ class EndWinFrame(gc.GameFrame):
                            command=lambda: root.show_frame(MainMenuFrame)) # Redirect back to main screen
 
     def on_enable(self):
-
         # Disable play again button
         self.btn_play_again.grid_forget()
         self.frame_hs.grid_forget()
@@ -750,6 +750,15 @@ class EndWinFrame(gc.GameFrame):
             self.show_highscores()
         self.entry_name.bind("<Return>", on_enter_name) # Bind enter key to trigger on_enter_name() function
 
+    def on_disable(self) -> None:
+        # Ungrid dem labels!
+        for player_label in self.labels_score:
+            name_label, time_label = player_label
+            name_label.grid_forget()
+            time_label.grid_forget()
+
+        # Forget everything!
+        self.labels_score.clear()
 
     def show_highscores(self):
         self.entry_name.unbind("<Return>") # Unbind key
@@ -758,7 +767,7 @@ class EndWinFrame(gc.GameFrame):
         self.frame_hs.grid(row=0, column=0, ipady=10)
         self.btn_play_again.grid(row=0, column=0, pady=(20, 20), sticky='s') # Enable play again button
 
-        #Read from highscore file
+        # Read from highscore file
         scores: list = []
         with open(f'highscores{self.root.difficulty}.txt','a+') as f:
             f.seek(0)
@@ -774,13 +783,13 @@ class EndWinFrame(gc.GameFrame):
         # Sort highscores
         scores.sort(key=lambda tup: float(tup[1]))
 
-        # Create labels (only first 10)
-        labels_score = [(tk.Label(self.frame_hs, text=name, font=self.root.content_font, background='#FFB600'),
+        # Create name and score label sets (only first 10)
+        self.labels_score = [(tk.Label(self.frame_hs, text=name, font=self.root.content_font, background='#FFB600'),
                         tk.Label(self.frame_hs, text=f'{time}s', font=self.root.content_font, background='#FFB600'))
                         for name, time in scores[:10]]
 
         # Grid those labels!
-        for i, player_label in enumerate(labels_score):
+        for i, player_label in enumerate(self.labels_score):
             name_label, time_label = player_label
             name_label.grid(row=i+1, column=0, padx=(20, 20), pady= (2, 2), sticky='w') # Create space between name and score
             time_label.grid(row=i+1, column=1, padx=(20, 20), pady= (2, 2), sticky='e')
