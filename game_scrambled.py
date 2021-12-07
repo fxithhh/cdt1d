@@ -231,16 +231,10 @@ class GameScrambled():
             print("Caught by cat!")
             if self.on_win_callback:
                 self.on_win_callback(self.WinType.LOSE)
-<<<<<<< Updated upstream
 
     def check_cat_position(self) -> None:
         """ Checks the cat position and whether the cat has caught up with the mouse, or if the mouse has left the cat in the dust. Triggers the game ending condition if it has.
         """
-=======
-        print("Answer History")
-        for ans_tuple in self.results:
-            print(ans_tuple)
->>>>>>> Stashed changes
 
         # Lose Condition
         if self.get_cat_dist_from_mouse() < 0:
@@ -318,17 +312,9 @@ class GameScrambled():
 
                 question_points = -1
                 print("Wrong answer. -1 point.")
-<<<<<<< Updated upstream
 
         self.mouse_point += question_points # Collating the total amount of points
 
-=======
-    
-                self.next_question() #Start the next question
-        
-        self.mouse_point += question_points #Collating the total amount of points 
-        self.results.append((answer,original_word)) #Saves answer into results
->>>>>>> Stashed changes
         return question_points
 
     def initiate_game(self, difficulty: int, cat_initial: int) -> None:
