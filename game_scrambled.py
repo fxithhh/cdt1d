@@ -231,6 +231,9 @@ class GameScrambled():
             print("Caught by cat!")
             if self.on_win_callback:
                 self.on_win_callback(self.WinType.LOSE)
+        print("Answer History")
+        for ans_tuple in self.results:
+            print(ans_tuple)
 
     def check_cat_position(self) -> None:
         """ Checks the cat position and whether the cat has caught up with the mouse, or if the mouse has left the cat in the dust. Triggers the game ending condition if it has.
@@ -314,6 +317,7 @@ class GameScrambled():
                 print("Wrong answer. -1 point.")
 
         self.mouse_point += question_points # Collating the total amount of points
+        self.results.append((answer,original_word))
 
         return question_points
 

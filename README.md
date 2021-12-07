@@ -26,3 +26,7 @@ There are 3 levels of difficulty, increasing in length of words and rarity of an
 If you go very fast, you might even leave the cat in the dust!
 
 Try to get as quick a time as you possibly can, and earn a place in the *Hall of Fame*.
+
+## How to run the game:
+
+Double click the .bat file or run main.py in the cmd or your preferred IDE
